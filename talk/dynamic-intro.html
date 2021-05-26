@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Thomas Petzoldt and Karline Soetaert" />
+  <meta name="date" content="2021-05-26" />
+  <title>Numerical simulation of dynamic systems with R: an introduction</title>
+  <style type="text/css">
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+              </style>
+  <script src="dynamic-intro_files/header-attrs-2.8.3/header-attrs.js"></script>
+  <script src="dynamic-intro_files/jquery-1.11.3/jquery.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="dynamic-intro_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="dynamic-intro_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+  <script src="dynamic-intro_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+  <script src="dynamic-intro_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+  <style>h1 {font-size: 34px;}
+         h1.title {font-size: 38px;}
+         h2 {font-size: 30px;}
+         h3 {font-size: 24px;}
+         h4 {font-size: 18px;}
+         h5 {font-size: 16px;}
+         h6 {font-size: 12px;}
+         code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+         pre:not([class]) { background-color: white }</style>
+  <link href="dynamic-intro_files/slidy-2/styles/slidy.css" rel="stylesheet" />
+  <script src="dynamic-intro_files/slidy-2/scripts/slidy.js"></script>
+  <script src="dynamic-intro_files/slidy_shiny-1/slidy_shiny.js"></script>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+   href="tp_slidy.css" />
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Numerical simulation of dynamic systems with R: an introduction</h1>
+  <p class="author">
+Thomas Petzoldt and Karline Soetaert
+  </p>
+  <p class="date">2021-05-26</p>
+</div>
+<div id="preface" class="slide section level2">
+<h1>Preface</h1>
+<p>Dynamical systems are found everywhere, in mathematics, physics, chemistry, engineering and business - ecology and aquatic sciences are no exception.</p>
+<p>One common approach to describe such systems is by means of differential equations. Following the ideas of Forrester, differential equations appear quite naturally if we describe changes in a system in terms of growth and decay, which together make up a mass balance. A somewhat bigger challenge is to solve these differential equations - some of us may still remember the challenges of differential calculus in high school courses.</p>
+<p>Fortunately, computer algorithms allow to solve even complex differential equation systems numerically. This has opened a world of practical applications to be accessible for anyone that has a basic knowledge in scientific computing, or is willing to acquire this knowledge. R is such a scientific computing language that offers powerful methods to solve differential equations. Moreover, some R-packages are especially designed to also solve spatially variable problems that are often found of importance in aquatic sciences.</p>
+<p>The introduction will demonstrate selected examples: growth of organisms, predator-prey interaction, spread of diseases, and transport-reaction problems. The formulation of such models in R can be surprisingly compact and close to the mathematical equations.</p>
+<!-- style adjustments. ToDo: revise and move to separate file /-->
+<style>
+ h2, h3 {
+   color: #009de0;
+   font-size: 40px;
+}
+
+div.vbox {
+  float: left;
+  height: 40%; width: 50%;
+  margin-top: -220px;
+}
+div.hbox {
+  width:60%;  margin-top: 0;
+  margin-left:auto; margin-right:auto;
+  height: 60%;
+  border:1px solid silver;
+  // background:#F0F0F0;
+  overflow:auto;
+  text-align:left;
+  clear:both;
+}
+.math {
+  font-size: 95%;
+  padding-right: 1ex;
+}
+li::marker {
+  color: orange;
+}
+</style>
+</div>
+<div id="dynamic-systems" class="slide section level2">
+<h1>Dynamic Systems</h1>
+<h3 id="taken-from-wikipedia">Taken from <a href="https://en.wikipedia.org/wiki/Dynamical_system">Wikipedia</a></h3>
+<p>"In mathematics, a dynamical system is a system in which a function describes the time dependence of a point in a geometrical space. Examples include the mathematical models that describe the swinging of a clock pendulum, the flow of water in a pipe, and the number of fish each springtime in a lake.</p>
+<p>At any given time, a dynamical system has a state given by a tuple of real numbers (a vector) that can be represented by a point in an appropriate state space (a geometrical manifold). The evolution rule of the dynamical system is a function that describes what future states follow from the current state."</p>
+<h3 id="different-ways-of-description">Different ways of description:</h3>
+<ul>
+<li>statistical approach: time series of state variables (pools)</li>
+<li>dynamic approach: description of changes
+<ul>
+<li>automata in discrete time: IBMs, ABMs, cellular automata</li>
+<li>equations in discrete time: difference equations</li>
+<li>equations in continuous time: differential equations (ODEs)</li>
+</ul></li>
+</ul>
+<p>A dynamical system can be described deterministically or stochastically. We focus on the <strong>deterministic</strong> description in <strong>continuous</strong> time with numerically solved differential equations.</p>
+</div>
+<div id="newton-and-forrester" class="slide section level2">
+<h1>Newton and Forrester</h1>
+<ul>
+<li>system dynamics</li>
+<li>differential equations are easy to understand, if we think in pools and changes</li>
+</ul>
+</div>
+<div id="immigration-and-exponential-growth" class="slide section level2">
+<h1>Immigration and Exponential Growth</h1>
+<ul>
+<li>simple figure that compares zero and first order growth</li>
+<li>first order growth involves feedback</li>
+</ul>
+</div>
+<div id="analytical-integration-and-the-euler-method" class="slide section level2">
+<h1>Analytical Integration and the Euler Method</h1>
+<ul>
+<li>analytical integration</li>
+<li>stepwise solution with R = Euler’s method</li>
+<li>problem of the explicit forward method: integration error</li>
+</ul>
+</div>
+<div id="numerical-integration-with-desolve-the-naive-way" class="slide section level2">
+<h1>Numerical Integration with deSolve: the naive way</h1>
+<ul>
+<li>define the model as a function</li>
+<li>use ode</li>
+<li>use plot</li>
+</ul>
+</div>
+<div id="runge-kutta-odepack-desolve-part-i" class="slide section level2">
+<h1>Runge-Kutta, ODEPACK, deSolve, part I</h1>
+<ul>
+<li>approaches to resolve the integration error</li>
+<li>additional time steps and use of polynomials: RK-Methods
+<ul>
+<li>more precise, but precision depends on pre-defined time step</li>
+<li>problem: either not precise enough or too much work</li>
+<li>danger of instability</li>
+<li>optimum time step can vary over time</li>
+<li>stiff systems: some states change faster than others</li>
+</ul></li>
+<li>adaptive step size, guaranteed precision
+<ul>
+<li>different ways to appraoch this</li>
+<li>combination of two RK methods</li>
+<li>iteration methods, e.g. Adams or BDF</li>
+<li>lsoda: switches between Adams (for stiff) and BDF (for non-stiff) regions</li>
+</ul></li>
+</ul>
+</div>
+<div id="resource-limited-growth" class="slide section level2">
+<h1>Resource Limited Growth</h1>
+<ul>
+<li>algae and phosphorus</li>
+<li>stoichiometry, package marelac</li>
+<li>functional response</li>
+</ul>
+</div>
+<div id="sir-and-the-covid-19-pandemic" class="slide section level2">
+<h1>SIR and the Covid 19 Pandemic</h1>
+<ul>
+<li>similar to resource-limited growth</li>
+<li>show atol, rtol and rescaling of problems</li>
+</ul>
+</div>
+<div id="external-interventions" class="slide section level2">
+<h1>External Interventions</h1>
+<ul>
+<li>implementation of forcings</li>
+<li>plotting of scenarios</li>
+</ul>
+</div>
+<div id="back-to-lake-modelling-the-chemostat" class="slide section level2">
+<h1>Back to Lake Modelling: The Chemostat</h1>
+<ul>
+<li>inflow and outflow</li>
+<li>numerical solution</li>
+<li>equilibrium</li>
+<li>rootSolve and analytical solution of equlibrium</li>
+</ul>
+</div>
+<div id="interaction-between-populations-lotka-volterras-predator-and-prey" class="slide section level2">
+<h1>Interaction Between Populations: Lotka-Volterra’s Predator and Prey</h1>
+<ul>
+<li>state diagram, cycles</li>
+<li>damped cycle if we introduce a Monod term</li>
+</ul>
+</div>
+<div id="efficient-model-formulation-in-matrix-style" class="slide section level2">
+<h1>Efficient Model Formulation in Matrix Style</h1>
+<ul>
+<li>multi-species predator-prey model</li>
+</ul>
+</div>
+<div id="pdes-in-1d-transport-in-a-river" class="slide section level2">
+<h1>PDE’s in 1D: Transport in a River</h1>
+<ul>
+<li>package ReacTran</li>
+<li>uses also matrix formulation</li>
+<li>plot3D example</li>
+</ul>
+</div>
+<div id="outlook" class="slide section level2">
+<h1>Outlook</h1>
+<ul>
+<li>some bigger applications</li>
+<li>rodeo package</li>
+<li>shiny</li>
+</ul>
+</div>
+<div id="appendices" class="slide section level2">
+<h1>Appendices</h1>
+<p>Things that should be mentioned somewhere, but not yet in the introductory lecture</p>
+<ul>
+<li>Solver functions in deSolve</li>
+<li>C and Fortran interface</li>
+<li>Karline’s books</li>
+<li>Online resources: R-Forge, CRAN-Taskview, publications</li>
+</ul>
+</div>
+<div id="copyright" class="slide section level2">
+<h1>Copyright</h1>
+<p>This resource was created by <a href="github.com/tpetzoldt">tpetzoldt</a> and <a href="https://github.com/karlines">karlines</a>. It is provided as is without warranty.</p>
+</div>
+<div id="bibliography" class="slide section level2">
+<h1>Bibliography</h1>
+</div>
+
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+</body>
+</html>

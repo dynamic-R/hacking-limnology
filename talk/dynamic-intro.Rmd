@@ -1,0 +1,225 @@
+---
+# https://garrettgman.github.io/rmarkdown/slidy_presentation_format.html
+title: "Numerical simulation of dynamic systems with R: an introduction"
+author: "Thomas Petzoldt and Karline Soetaert"
+date: "2021-05-26"
+bibliography: bib.bib
+output:
+  slidy_presentation:
+    font_adjustment: 0
+    css: tp_slidy.css
+    theme: default
+    highlight: default
+    #df_print: kable
+    #mathjax: local
+    pandoc_args: -V slidy-url=myslidy
+    self_contained: no
+---
+
+Preface
+--------------------------------------------------------------------------------
+
+Dynamical systems are found everywhere, in mathematics, physics, chemistry, engineering and business - ecology and aquatic sciences are no exception.
+
+One common approach to describe such systems is by means of differential equations. Following the ideas of Forrester, differential equations appear quite naturally if we describe changes in a system in terms of growth and decay, which together make up a mass balance. A somewhat bigger challenge is to solve these differential equations - some of us may still remember the challenges of differential calculus in high school courses.
+
+Fortunately, computer algorithms allow to solve even complex differential equation systems numerically. This has opened a world of practical applications to be accessible for anyone that has a basic knowledge in scientific computing, or is willing to acquire this knowledge. R is such a scientific computing language that offers powerful methods to solve differential equations. Moreover, some R-packages are especially designed to also solve spatially variable problems that are often found of importance in aquatic sciences.
+
+The introduction will demonstrate selected examples: growth of organisms, predator-prey interaction, spread of diseases, and transport-reaction problems. The formulation of such models in R can be surprisingly compact and close to the mathematical equations. 
+
+<!-- style adjustments. ToDo: revise and move to separate file /-->
+
+<style>
+ h2, h3 {
+   color: #009de0;
+   font-size: 40px;
+}
+
+div.vbox {
+  float: left;
+  height: 40%; width: 50%;
+  margin-top: -220px;
+}
+div.hbox {
+  width:60%;  margin-top: 0;
+  margin-left:auto; margin-right:auto;
+  height: 60%;
+  border:1px solid silver;
+  // background:#F0F0F0;
+  overflow:auto;
+  text-align:left;
+  clear:both;
+}
+.math {
+  font-size: 95%;
+  padding-right: 1ex;
+}
+li::marker {
+  color: orange;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library("dplyr")
+library("tidyr")
+library("kableExtra")
+library("car")
+mypar <- list(las=1, cex.lab=1.4, cex.axis=1.4, lwd=2)
+```
+
+
+Dynamic Systems
+--------------------------------------------------------------------------------
+
+### Taken from [Wikipedia](https://en.wikipedia.org/wiki/Dynamical_system)
+
+
+"In mathematics, a dynamical system is a system in which a function describes the time dependence of a point in a geometrical space. Examples include the mathematical models that describe the swinging of a clock pendulum, the flow of water in a pipe, and the number of fish each springtime in a lake.
+
+At any given time, a dynamical system has a state given by a tuple of real numbers (a vector) that can be represented by a point in an appropriate state space (a geometrical manifold). The evolution rule of the dynamical system is a function that describes what future states follow from the current state."
+
+
+### Different ways of description:
+
+* statistical approach: time series of state variables (pools)
+* dynamic approach: description of changes
+    * automata in discrete time: IBMs, ABMs, cellular automata
+    * equations in discrete time: difference equations
+    * equations in continuous time: differential equations (ODEs)
+
+A dynamical system can be described deterministically or stochastically. 
+We focus on the **deterministic** description in **continuous** time
+with numerically solved differential equations.
+
+
+Newton and Forrester
+--------------------------------------------------------------------------------
+
+* system dynamics
+* differential equations are easy to understand, if we think in pools and changes
+
+
+Immigration and Exponential Growth
+--------------------------------------------------------------------------------
+
+* simple figure that compares zero and first order growth
+* first order growth involves feedback
+
+Analytical Integration and the Euler Method
+--------------------------------------------------------------------------------
+
+* analytical integration
+* stepwise solution with R = Euler's method
+* problem of the explicit forward method: integration error
+
+Numerical Integration with deSolve: the naive way
+--------------------------------------------------------------------------------
+
+* define the model as a function
+* use ode
+* use plot
+
+
+Runge-Kutta, ODEPACK, deSolve, part I
+--------------------------------------------------------------------------------
+
+* approaches to resolve the integration error
+* additional time steps and use of polynomials: RK-Methods
+    * more precise, but precision depends on pre-defined time step
+    * problem: either not precise enough or too much work
+    * danger of instability
+    * optimum time step can vary over time
+    * stiff systems: some states change faster than others
+* adaptive step size, guaranteed precision
+    * different ways to appraoch this
+    * combination of two RK methods
+    * iteration methods, e.g. Adams or BDF
+    * lsoda: switches between Adams (for stiff) and BDF (for non-stiff) regions
+    
+
+
+Resource Limited Growth
+--------------------------------------------------------------------------------
+
+* algae and phosphorus
+* stoichiometry, package marelac
+* functional response
+
+
+SIR and the Covid 19 Pandemic
+--------------------------------------------------------------------------------
+
+* similar to resource-limited growth
+* show atol, rtol and rescaling of problems
+
+
+External Interventions
+--------------------------------------------------------------------------------
+
+* implementation of forcings
+* plotting of scenarios
+
+
+Back to Lake Modelling: The Chemostat
+--------------------------------------------------------------------------------
+
+* inflow and outflow
+* numerical solution
+* equilibrium
+* rootSolve and analytical solution of equlibrium
+
+
+Interaction Between Populations: Lotka-Volterra's Predator and Prey
+--------------------------------------------------------------------------------
+
+* state diagram, cycles
+* damped cycle if we introduce a Monod term
+
+
+Efficient Model Formulation in Matrix Style
+--------------------------------------------------------------------------------
+
+* multi-species predator-prey model
+
+
+PDE's in 1D: Transport in a River
+--------------------------------------------------------------------------------
+
+* package ReacTran
+* uses also matrix formulation
+* plot3D example
+
+Outlook
+--------------------------------------------------------------------------------
+
+* some bigger applications
+* rodeo package
+* shiny
+
+
+Appendices
+--------------------------------------------------------------------------------
+
+Things that should be mentioned somewhere, but not yet in the introductory
+lecture
+
+* Solver functions in deSolve
+* C and Fortran interface
+* Karline's books
+* Online resources: R-Forge, CRAN-Taskview, publications
+
+
+
+
+Copyright
+--------------------------------------------------------------------------------
+
+This resource was created by [tpetzoldt](github.com/tpetzoldt) and 
+[karlines](https://github.com/karlines). It is provided 
+as is without warranty.
+
+
+Bibliography
+--------------------------------------------------------------------------------
