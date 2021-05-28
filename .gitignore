@@ -38,3 +38,4 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 /talk/dynamic-intro_files
+/_local
