@@ -27,6 +27,13 @@ background-image: url("img/water-light.jpg")
 
 ## Thomas Petzoldt and Karline Soetaert
 
+
+### IMPORTANT NOTE
+
+This slide set is work in progress and corrently at a very early stage of development.
+
+For the time being, please consult https://desolve-r-forge.r-project.org
+
 ### `r Sys.Date()`
 
 ```{r setup, include=FALSE}
@@ -305,6 +312,7 @@ a consistent workflow:
 ## The Chemostat Code
 
 .scrollable[
+
 ```{r echo=TRUE}
 library("deSolve")
 library("rootSolve")
