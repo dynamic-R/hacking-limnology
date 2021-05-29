@@ -30,7 +30,7 @@ background-image: url("img/water-light.jpg")
 
 ### IMPORTANT NOTE
 
-This slide set is work in progress and corrently at a very early stage of development.
+This slide set is work in progress and currently at a very early stage of development.
 
 For the time being, please consult https://desolve-r-forge.r-project.org
 
