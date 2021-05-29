@@ -1,4 +1,5 @@
 # Main index
 
-* part 1
-* part 2
+* [Introduction](dynamic-intro.html)
+* [Test](test.html)
+
