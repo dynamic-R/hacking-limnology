@@ -167,8 +167,8 @@ J.W. Forrester 2009.
 \frac{dX}{dt} = \mbox{import} - \mbox{export}\\
 }$$`
 
-<div id="htmlwidget-b18f789e8483735a912e" style="width:864px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b18f789e8483735a912e">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1aac0f39f068e42048b9" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1aac0f39f068e42048b9">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 
@@ -180,8 +180,8 @@ J.W. Forrester 2009.
 \frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
 \frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
 }$$`
-<div id="htmlwidget-223548aa467c71728892" style="width:864px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-223548aa467c71728892">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-77b08196cd2a0e8fb20e" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-77b08196cd2a0e8fb20e">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 ---
@@ -197,7 +197,7 @@ J.W. Forrester 2009.
 
 ## Numerical Integration with deSolve: the naive way
 
-* package **deSolve** &lt;a name=cite-deSolve_jss&gt;&lt;/a&gt;([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09)) provides all necessary tools and supports
+* package **deSolve** ([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09)) provides all necessary tools and supports
 a consistent workflow:
 
 * define the model as a function
@@ -384,11 +384,9 @@ as is without warranty.
 ## Bibliography
 
 .scrollable[
-&lt;a name=bib-deSolve_jss&gt;&lt;/a&gt;[Soetaert, K., T. Petzoldt, and R.
-Setzer](#cite-deSolve_jss) (2010b). "Solving Differential Equations in
-R: Package 'deSolve'". In: _Journal of Statistical Software_ 33.9, pp.
-1-25. ISSN: 1548-7660. URL:
-[http://www.jstatsoft.org/v33/i09](http://www.jstatsoft.org/v33/i09).
+&lt;a name=bib-deSolve_jss&gt;&lt;/a&gt;[Soetaert, K., T. Petzoldt, and R. Setzer](#cite-deSolve_jss) (2010b). "Solving
+Differential Equations in R: Package 'deSolve'". In: _Journal of Statistical Software_ 33.9, pp. 1-25. ISSN:
+1548-7660. URL: [http://www.jstatsoft.org/v33/i09](http://www.jstatsoft.org/v33/i09).
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
@@ -399,7 +397,7 @@ R: Package 'deSolve'". In: _Journal of Statistical Software_ 33.9, pp.
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false,
-"self_contained": true
+"self_contained": false
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
