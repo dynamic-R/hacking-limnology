@@ -2,7 +2,6 @@
 title: "Numerical simulation of dynamic systems with R: an introduction"
 author: "Thomas Petzoldt and Karline Soetaert"
 date: "`r Sys.Date()`"
-bibliography: bib.bib
 lang: en
 output:
   xaringan::moon_reader:
@@ -18,12 +17,11 @@ output:
       self_contained: true
 ---
 
-
----
-
 class: center, middle, title-slide
 
 background-image: url("img/water-light.jpg")
+
+<!-- Own title slide / -->
 
 # Numerical simulation of dynamic systems with R: an introduction
 
@@ -36,6 +34,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library("dplyr")
 library("tidyr")
 library("kableExtra")
+library("DiagrammeR")
 library("deSolve")
 library("rootSolve")
 mypar <- list(las=1, cex.lab=1.4, cex.axis=1.4, lwd=2)
@@ -122,18 +121,110 @@ Gottfried Wilhelm Leibniz, 1646 - 1716
 
 ---
 
-## Forrester: System Dynamics
+## Jay W. Forrester: System Dynamics
 
-* differential equations are easy to understand, if we think in pools and changes
+
+.pull-left[
+
+
+![:scale 70%](img/forrester-fig3.png)
+]
+
+
+
+.pull-right[
+
+
+![:scale 50%](img/forrester-fig4.png)
+]
+
+* thinking in feedback loops
+* easy to understand, if we think in pools and changes
+
+From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://www.cc.gatech.edu/classes/AY2018/cs8803cc_spring/research_papers/Forrester-SystemDynamics.pdf)
+
+---
+
+## Dynamic systems: how and why?
+
+
+"Many believe that system dynamics has helped them become skilled at
+inventing the future, either by sketching out causal loops on the back of
+an envelope, or by assembling equations of cause and effect in a
+computer model. Both approaches work." (J.W.F, 1995)
+
+
+.pull-left[
+#### Let’s speak about computers
+- continous time $\rightarrow$ differential equations
+- discrete time: another interesting story ...
+
+.center[
+![:scale 40%](img/rlogo.png)
+]
+]    
+
+.pull-right[
+#### Why numerical integration?
+* Not all systems have an analytical solution.
+* Numerical solutions allow discrete input.    
+
+"... students can deal with high-order dynamic systems
+without ever discovering that their elders consider such to be very difficult."
+J.W. Forrester 2009.
+]
 
 
 ---
 
-## Immigration and Exponential Growth
+## Import and Export
+
+$${
+\frac{dX}{dt} = \mbox{import} - \mbox{export}\\
+}$$
+
+```{r echo=FALSE, fig.width=12, fig.height=4}
+grViz("digraph feedback {
+         graph [rankdir = 'LR']
+           node [shape = box, penwidth=2, fontname = 'Helvetica']
+             Matter
+           node [shape = octagon, penwidth=0.5, style='rounded', fixedsize=25, fontsize=8]
+             Source Sink
+           node [shape = none, fontsize=10]
+             import export
+           edge [penwidth=1.5]
+             Source -> import -> Matter -> export -> Sink
+         
+}")
+```
 
 
-* simple figure that compares zero and first order growth
-* first order growth involves feedback
+
+---
+
+## Exponential Growth
+
+$${\frac{dN}{dt} = \mbox{birth} - \mbox{death}\\
+\frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
+\frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
+}$$
+```{r echo=FALSE, fig.width=12, fig.height=4}
+grViz("digraph feedback {
+         graph [rankdir = 'LR']
+           node [shape = box, penwidth=2, fontname = 'Helvetica']
+             Population
+           node [shape = octagon, penwidth=0.5, style='rounded', fixedsize=25, fontsize=8]
+             Source Sink
+           node [shape = none, fontsize=10]
+             birth death
+           edge [penwidth=1.5]
+             Source -> birth -> Population -> death -> Sink
+           edge [penwidth=0.7, tailport = 'n', headport = 'n', constraint = false, color=tomato]
+             Population -> birth 
+             Population -> death
+}")
+```
+
 
 ---
 

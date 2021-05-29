@@ -4,28 +4,31 @@
     <title>Numerical simulation of dynamic systems with R: an introduction</title>
     <meta charset="utf-8" />
     <meta name="author" content="Thomas Petzoldt and Karline Soetaert" />
-    <meta name="date" content="2021-05-28" />
+    <meta name="date" content="2021-05-29" />
     <script src="libs/header-attrs-2.8.4/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/useR-fonts.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+    <script src="libs/viz-1.8.2/viz.js"></script>
+    <link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+    <script src="libs/grViz-binding-1.0.6.1/grViz.js"></script>
     <link rel="stylesheet" href="tp_xaringan.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 
 
-
----
-
 class: center, middle, title-slide
 
 background-image: url("img/water-light.jpg")
+
+&lt;!-- Own title slide / --&gt;
 
 # Numerical simulation of dynamic systems with R: an introduction
 
 ## Thomas Petzoldt and Karline Soetaert
 
-### 2021-05-28
+### 2021-05-29
 
 
 
@@ -102,18 +105,84 @@ Gottfried Wilhelm Leibniz, 1646 - 1716
 
 ---
 
-## Forrester: System Dynamics
+## Jay W. Forrester: System Dynamics
 
-* differential equations are easy to understand, if we think in pools and changes
+
+.pull-left[
+
+
+![:scale 70%](img/forrester-fig3.png)
+]
+
+
+
+.pull-right[
+
+
+![:scale 50%](img/forrester-fig4.png)
+]
+
+* thinking in feedback loops
+* easy to understand, if we think in pools and changes
+
+From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://www.cc.gatech.edu/classes/AY2018/cs8803cc_spring/research_papers/Forrester-SystemDynamics.pdf)
+
+---
+
+## Dynamic systems: how and why?
+
+
+"Many believe that system dynamics has helped them become skilled at
+inventing the future, either by sketching out causal loops on the back of
+an envelope, or by assembling equations of cause and effect in a
+computer model. Both approaches work." (J.W.F, 1995)
+
+
+.pull-left[
+#### Let’s speak about computers
+- continous time `\(\rightarrow\)` differential equations
+- discrete time: another interesting story ...
+
+.center[
+![:scale 40%](img/rlogo.png)
+]
+]    
+
+.pull-right[
+#### Why numerical integration?
+* Not all systems have an analytical solution.
+* Numerical solutions allow discrete input.    
+
+"... students can deal with high-order dynamic systems
+without ever discovering that their elders consider such to be very difficult."
+J.W. Forrester 2009.
+]
 
 
 ---
 
-## Immigration and Exponential Growth
+## Import and Export
+
+`$${
+\frac{dX}{dt} = \mbox{import} - \mbox{export}\\
+}$$`
+
+<div id="htmlwidget-b18f789e8483735a912e" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b18f789e8483735a912e">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
-* simple figure that compares zero and first order growth
-* first order growth involves feedback
+
+---
+
+## Exponential Growth
+
+`$${\frac{dN}{dt} = \mbox{birth} - \mbox{death}\\
+\frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
+\frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
+}$$`
+<div id="htmlwidget-223548aa467c71728892" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-223548aa467c71728892">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
 
 ---
 
@@ -242,7 +311,7 @@ for (i in 1:nrow(state)) {
 par(mfrow = c(3, 1))
 ```
 
-![](dynamic-intro_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+![](dynamic-intro_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
 
 ```r
 plot(S ~ D, data = state, type = "l")
@@ -250,7 +319,7 @@ plot(X ~ D, data = state, type = "l")
 plot(S * X ~ D, data = state, type = "l")
 ```
 
-![](dynamic-intro_files/figure-html/unnamed-chunk-1-2.png)&lt;!-- --&gt;
+![](dynamic-intro_files/figure-html/unnamed-chunk-3-2.png)&lt;!-- --&gt;
 ]
 
 ---
