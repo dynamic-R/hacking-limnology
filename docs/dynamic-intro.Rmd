@@ -30,8 +30,10 @@ background-image: url("img/water-light.jpg")
 
 ### IMPORTANT NOTE
 
-This slide set is work in progress and currently at a very early stage of development.
+This slide set is work in progress and still at a **very early stage of development**.
 It works with **Chrome** and recent versions of **Edge**, wheres scrolling may have problems with Firefox.
+
+The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021
 
 For the time being, please consult https://desolve-r-forge.r-project.org
 
