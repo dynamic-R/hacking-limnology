@@ -14,6 +14,8 @@ output:
       highlightLines: true
       countIncrementalSlides: false
       self_contained: false
+      navigation:
+        scroll: false
 ---
 
 ### IMPORTANT NOTE

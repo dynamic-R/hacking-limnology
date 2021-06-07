@@ -4,7 +4,7 @@
     <title>Numerical simulation of dynamic systems with R: an introduction</title>
     <meta charset="utf-8" />
     <meta name="author" content="Thomas Petzoldt and Karline Soetaert" />
-    <meta name="date" content="2021-06-01" />
+    <meta name="date" content="2021-06-07" />
     <script src="libs/header-attrs-2.8.4/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/useR-fonts.css" rel="stylesheet" />
@@ -38,7 +38,7 @@ The name of the repo points to an upcoming workshop about open data in aquatic s
 
 For the time being, please consult https://desolve-r-forge.r-project.org
 
-### 2021-06-01
+### 2021-06-07
 
 
 
@@ -177,8 +177,8 @@ J.W. Forrester 2009.
 \frac{dX}{dt} = \mbox{import} - \mbox{export}\\
 }$$`
 
-<div id="htmlwidget-37317b8af5e04a3bf9e5" style="width:864px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-37317b8af5e04a3bf9e5">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7994cff292c53f65bf51" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7994cff292c53f65bf51">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 
@@ -190,8 +190,8 @@ J.W. Forrester 2009.
 \frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
 \frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
 }$$`
-<div id="htmlwidget-54497871c2626139a7db" style="width:864px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-54497871c2626139a7db">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-313bf0556eb56c671884" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-313bf0556eb56c671884">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 ---
@@ -253,7 +253,7 @@ plot(time, N, type = "l")
 
 ## Numerical Integration with deSolve: the naive way
 
-* package **deSolve** ([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09)) provides all necessary tools and supports
+* package **deSolve** &lt;a name=cite-deSolve_jss&gt;&lt;/a&gt;([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09)) provides all necessary tools and supports
 a consistent workflow:
 
 * define the model as a function
@@ -442,9 +442,9 @@ as is without warranty.
 
 .scrollable[
 &lt;a name=bib-deSolve_jss&gt;&lt;/a&gt;[Soetaert, K., T. Petzoldt, and R.
-Setzer](#cite-deSolve_jss) (2010b). "Solving Differential
-Equations in R: Package 'deSolve'". In: _Journal of Statistical
-Software_ 33.9, pp. 1-25. ISSN: 1548-7660. URL:
+Setzer](#cite-deSolve_jss) (2010b). "Solving Differential Equations in
+R: Package 'deSolve'". In: _Journal of Statistical Software_ 33.9, pp.
+1-25. ISSN: 1548-7660. URL:
 [http://www.jstatsoft.org/v33/i09](http://www.jstatsoft.org/v33/i09).
 ]
     </textarea>
@@ -456,7 +456,10 @@ Software_ 33.9, pp. 1-25. ISSN: 1548-7660. URL:
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false,
-"self_contained": false
+"self_contained": false,
+"navigation": {
+"scroll": false
+}
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

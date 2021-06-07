@@ -4,7 +4,7 @@
     <title>Technical tests with xaringan</title>
     <meta charset="utf-8" />
     <meta name="author" content="Thomas Petzoldt" />
-    <meta name="date" content="2021-05-29" />
+    <meta name="date" content="2021-06-07" />
     <script src="libs/header-attrs-2.8.4/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/useR-fonts.css" rel="stylesheet" />
@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 
 # Technical tests with xaringan
 ### Thomas Petzoldt
-### 2021-05-29
+### 2021-06-07
 
 ---
 
@@ -158,7 +158,10 @@ plot(S * X ~ D, data = state, type = "l")
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false,
-"self_contained": false
+"self_contained": false,
+"navigation": {
+"scroll": false
+}
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
