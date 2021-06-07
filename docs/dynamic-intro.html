@@ -177,8 +177,8 @@ J.W. Forrester 2009.
 \frac{dX}{dt} = \mbox{import} - \mbox{export}\\
 }$$`
 
-<div id="htmlwidget-7994cff292c53f65bf51" style="width:864px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7994cff292c53f65bf51">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-4534121c0af04bb0921e" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4534121c0af04bb0921e">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 
@@ -190,8 +190,8 @@ J.W. Forrester 2009.
 \frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
 \frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
 }$$`
-<div id="htmlwidget-313bf0556eb56c671884" style="width:864px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-313bf0556eb56c671884">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-a2225829ebe1e29d6960" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a2225829ebe1e29d6960">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 ---
@@ -200,17 +200,8 @@ J.W. Forrester 2009.
 
 Integration can be done analytically or with the computer
 
-.pull-left[
-`$${
-\frac{dN}{dt} = r\cdot N\\
-\int_0^t \frac{dN}{dt} = \int_0^t r\cdot N\\
-\int_0^t \frac{1}{N} dN = \int_0^t r dt\\
-\ln(N)=rt + c\\
-N_t = N_0 e^{rt}\\
-}$$`
-]
 
-.pull-right[
+.pull-left[
 ![](dynamic-intro_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
 ```r
 r    &lt;- 0.5
@@ -223,20 +214,26 @@ plot(time, N, type="l")
 ```
 ]
 
+.pull-right[
+`$${
+\frac{dN}{dt} = r\cdot N\\
+\int_0^t \frac{dN}{dt} = \int_0^t r\cdot N\\
+\int_0^t \frac{1}{N} dN = \int_0^t r dt\\
+\ln(N)=rt + c\\
+N_t = N_0 e^{rt}\\
+}$$`
+]
+
 ---
 
 ## Numerical Integration and the Euler Method
 
-.pull-left[
-`$${
-\frac{dN}{dt} = r\cdot N\\
-\frac{\Delta N}{\Delta t} = r\cdot N\\
-N_t = N_{t-1} + r\cdot N_{t-1}
-}$$`
-]
 
-.pull-right[.large[
+.pull-left[
+
 ![](dynamic-intro_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+
 
 ```r
 N &lt;- numeric(length(time))
@@ -247,13 +244,21 @@ for (i in 2:length(time)) {
 }
 plot(time, N, type = "l")
 ```
-]]
+]
+
+.pull-right[
+`$${
+\frac{dN}{dt} = r\cdot N\\
+\frac{\Delta N}{\Delta t} = r\cdot N\\
+N_t = N_{t-1} + r\cdot N_{t-1}
+}$$`
+]
 
 ---
 
 ## Numerical Integration with deSolve: the naive way
 
-* package **deSolve** &lt;a name=cite-deSolve_jss&gt;&lt;/a&gt;([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09)) provides all necessary tools and supports
+* package **deSolve** ([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09)) provides all necessary tools and supports
 a consistent workflow:
 
 * define the model as a function
@@ -368,7 +373,7 @@ for (i in 1:nrow(state)) {
 par(mfrow = c(3, 1))
 ```
 
-![](dynamic-intro_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+![](dynamic-intro_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
 
 ```r
 plot(S ~ D, data = state, type = "l")
@@ -376,7 +381,7 @@ plot(X ~ D, data = state, type = "l")
 plot(S * X ~ D, data = state, type = "l")
 ```
 
-![](dynamic-intro_files/figure-html/unnamed-chunk-5-2.png)&lt;!-- --&gt;
+![](dynamic-intro_files/figure-html/unnamed-chunk-6-2.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -441,11 +446,9 @@ as is without warranty.
 ## Bibliography
 
 .scrollable[
-&lt;a name=bib-deSolve_jss&gt;&lt;/a&gt;[Soetaert, K., T. Petzoldt, and R.
-Setzer](#cite-deSolve_jss) (2010b). "Solving Differential Equations in
-R: Package 'deSolve'". In: _Journal of Statistical Software_ 33.9, pp.
-1-25. ISSN: 1548-7660. URL:
-[http://www.jstatsoft.org/v33/i09](http://www.jstatsoft.org/v33/i09).
+&lt;a name=bib-deSolve_jss&gt;&lt;/a&gt;[Soetaert, K., T. Petzoldt, and R. Setzer](#cite-deSolve_jss) (2010b). "Solving
+Differential Equations in R: Package 'deSolve'". In: _Journal of Statistical Software_ 33.9, pp. 1-25. ISSN:
+1548-7660. URL: [http://www.jstatsoft.org/v33/i09](http://www.jstatsoft.org/v33/i09).
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

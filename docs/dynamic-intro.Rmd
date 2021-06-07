@@ -244,17 +244,8 @@ grViz("digraph feedback {
 
 Integration can be done analytically or with the computer
 
-.pull-left[
-$${
-\frac{dN}{dt} = r\cdot N\\
-\int_0^t \frac{dN}{dt} = \int_0^t r\cdot N\\
-\int_0^t \frac{1}{N} dN = \int_0^t r dt\\
-\ln(N)=rt + c\\
-N_t = N_0 e^{rt}\\
-}$$
-]
 
-.pull-right[
+.pull-left[
 ```{r echo=FALSE, fig.height=3}
 par(mar=c(4, 5, 0, 1)+.1, las=1, cex.lab=2)
 r    <- 0.5
@@ -275,19 +266,23 @@ plot(time, N, type="l")
 ```
 ]
 
+.pull-right[
+$${
+\frac{dN}{dt} = r\cdot N\\
+\int_0^t \frac{dN}{dt} = \int_0^t r\cdot N\\
+\int_0^t \frac{1}{N} dN = \int_0^t r dt\\
+\ln(N)=rt + c\\
+N_t = N_0 e^{rt}\\
+}$$
+]
+
 ---
 
 ## Numerical Integration and the Euler Method
 
-.pull-left[
-$${
-\frac{dN}{dt} = r\cdot N\\
-\frac{\Delta N}{\Delta t} = r\cdot N\\
-N_t = N_{t-1} + r\cdot N_{t-1}
-}$$
-]
 
-.pull-right[.large[
+.pull-left[
+
 ```{r echo=FALSE, fig.height=3}
 par(mar=c(4, 5, 0, 1)+.1, las=1, cex.lab=2)
 N <- numeric(length(time))
@@ -296,10 +291,14 @@ N[1] <- N0
 for (i in 2:length(time)) {
   N[i] <- N[i-1] + r * N[i-1] * dt
 }
-plot(time, N, type = "l", cex.axis=1.4)
+plot(time, N, type = "l")
+N <- N0 * exp(r * time)
+lines(time, N, lty="dashed")
+
 ```
 
-```r
+
+```{r echo=TRUE, eval=FALSE}
 N <- numeric(length(time))
 
 N[1] <- N0
@@ -308,7 +307,15 @@ for (i in 2:length(time)) {
 }
 plot(time, N, type = "l")
 ```
-]]
+]
+
+.pull-right[
+$${
+\frac{dN}{dt} = r\cdot N\\
+\frac{\Delta N}{\Delta t} = r\cdot N\\
+N_t = N_{t-1} + r\cdot N_{t-1}
+}$$
+]
 
 ---
 
