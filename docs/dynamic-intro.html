@@ -4,7 +4,7 @@
     <title>Numerical simulation of dynamic systems with R: an introduction</title>
     <meta charset="utf-8" />
     <meta name="author" content="Thomas Petzoldt and Karline Soetaert" />
-    <meta name="date" content="2021-06-07" />
+    <meta name="date" content="2021-06-09" />
     <script src="libs/header-attrs-2.8.4/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/useR-fonts.css" rel="stylesheet" />
@@ -38,7 +38,7 @@ The name of the repo points to an upcoming workshop about open data in aquatic s
 
 For the time being, please consult https://desolve-r-forge.r-project.org
 
-### 2021-06-07
+### 2021-06-09
 
 
 
@@ -177,8 +177,8 @@ J.W. Forrester 2009.
 \frac{dX}{dt} = \mbox{import} - \mbox{export}\\
 }$$`
 
-<div id="htmlwidget-4534121c0af04bb0921e" style="width:864px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4534121c0af04bb0921e">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-4d801a038beab1a939fc" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4d801a038beab1a939fc">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 
@@ -190,8 +190,8 @@ J.W. Forrester 2009.
 \frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
 \frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
 }$$`
-<div id="htmlwidget-a2225829ebe1e29d6960" style="width:864px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a2225829ebe1e29d6960">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ba25e0424cf510561114" style="width:864px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ba25e0424cf510561114">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 ---
@@ -256,42 +256,229 @@ N_t = N_{t-1} + r\cdot N_{t-1}
 
 ---
 
-## Numerical Integration with deSolve: the naive way
+### Numerical Integration with deSolve: the Simple Way
 
-* package **deSolve** ([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09)) provides all necessary tools and supports
-a consistent workflow:
+.pull-left[
+#### Logistic growth
 
-* define the model as a function
-* use ode
-* use plot
+`\(\frac{dN}{dt} = rN(1-N/K)\)`
+
+#### Model formulation close to mathematical notation
+
+
+```r
+library("deSolve")
+model &lt;- function (time, y, parms) {
+  with(as.list(c(y, parms)), {
+*  dN &lt;- r * N * (1 - N / K)
+    list(c(dN))
+  })
+}
+y0 &lt;- c(N = 0.1)
+parms &lt;- c(r = 0.1, K = 10)
+times &lt;- seq(0, 100, 1)
+```
+]
+
+.pull-right[
+#### Solve with `ode`
+
+
+```r
+out &lt;- ode(y0, times, model, parms)
+```
+
+#### Plot
+
+
+```r
+plot(out)
+```
+
+
+![](dynamic-intro_files/figure-html/ode-naive2-1.png)&lt;!-- --&gt;
+]
 
 ---
+## What is deSolve?
 
-## Runge-Kutta, ODEPACK, deSolve, part I
+.pull-left[ 
+
+#### An **R package** to solve differential equations
+
+* numerical simulation of **initial value problems**
+* ODE, PDE, DAE, DDE
+* popular *industry class solvers* from ODEPACK `\(^1\)`
+* `+` classical Euler and Runge-Kutta solvers
+* convenience tools (e.g. `plot`, forcings, events) 
+* extensive documentation, e.g.
+  &lt;a name=cite-deSolve_jss&gt;&lt;/a&gt;([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09))
+]
+
+.pull-right[
+
+#### Part of an "Ecosystem" for dynamical simulations
+* packages: rootSolve, bvpSolve, FME, reacTran, ...
+* books, websites, [StackOverflow]()
+
+#### More:
+* See [CRAN Task View](https://cran.r-project.org/web/views/DifferentialEquations.html) for related packages
+]
+
+`\(^1\)` Thanks to the great authors (ctb=contributors) of the original algorithms who made their code publicly available:
+
+Peter N. Brown [ctb] (files ddaspk.f, dvode.f, zvode.f), George D. Byrne [ctb] (files dvode.f, zvode.f), Ernst Hairer [ctb] (files radau5.f, radau5a), Alan C. Hindmarsh [ctb] (files ddaspk.f, dlsode.f, dvode.f, zvode.f, opdkmain.f, opdka1.f), Cleve Moler [ctb] (file dlinpck.f), Linda R. Petzold [ctb] (files ddaspk.f, dlsoda.f), Youcef Saad [ctb] (file dsparsk.f), Clement W. Ulrich [ctb] (file ddaspk.f)
+
+---
+## What is `ode`?
+
+#### `ode`
+* top-level function to call one of the solvers
+* default: `lsoda`
+* Livermore solver for Ordinary Differential Equations, automatic
+
+#### `lsoda`, `adams`, `bdf`, `vode`, ...?
+
+* stiff systems: `bdf`: tries hard to solve the system
+* sometimes, `adams` may be faster for simple problems 
+* default `lsoda` switches automatically between `bdf`and `adams`
+
+#### `euler`, `rk4`, `ode45`, ...
+
+* for specific problems
+
+#### `ode.1D`, `ode.3d`, ... `dde` 
+
+* see docs
 
 
-* approaches to resolve the integration error
-* additional time steps and use of polynomials: RK-Methods
-    * more precise, but precision depends on pre-defined time step
-    * problem: either not precise enough or too much work
+---
+## Automatic Step Size
+
+.pull-left[
+#### External and internal step size
+
+* user specifies tolerances `atol`, `rtol` = 1e-6
+* solver **adapts** internal step size to meet precision
+* results returned at pre-specified **external** time points
+
+
+#### Fixed-step solvers
+
+* `euler`, `rk2`, `rk4`
+* problem: either not precise enough or too much work
     * danger of instability
     * optimum time step can vary over time
     * stiff systems: some states change faster than others
-* adaptive step size, guaranteed precision
-    * different ways to appraoch this
-    * combination of two RK methods
-    * iteration methods, e.g. Adams or BDF
-    * lsoda: switches between Adams (for stiff) and BDF (for non-stiff) regions
-    
+* `rk4` was very popular, as it is very easy to implement
+* use only if you know why 
+
+]
+
+.pull-right[
+
+```r
+out &lt;- ode(y0, 
+*  times = 1:10, # external time steps
+  model, 
+  parms, 
+  atol = 1e-6, # absolute tolerance
+  rtol = 1e-6  # relative tolerance
+)
+```
+]
+
+
+---
+## Resource Limited Growth
+
+#### Two state variables
+* Nutrients, Algae
+* functional response (e.g. Holling, Monod, ...)
+* feedback
+
+
+.pull-left[
+
+<div id="htmlwidget-54321b9c760c1710a5c8" style="width:504px;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-54321b9c760c1710a5c8">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+]
+
+.pull-right[
+
+$$
+\frac{d\mbox{Algae}}{dt} = r \cdot f(\mbox{Nutrients}) \cdot \mbox{Algae}
+$$
+$$
+\frac{d\mbox{Nutrients}}{dt} = - \frac{1}{Yield} \cdot r \cdot f(\mbox{Nutrients}) \cdot  \mbox{Algae} 
+$$
+]
+
 
 ---
 
 ## Resource Limited Growth
 
+.scrollable[
 
-* algae and phosphorus
-* stoichiometry, package marelac
-* functional response
+#### The Model
+
+
+```r
+model &lt;- function (time, y, parms) {
+  with(as.list(c(y, parms)), {
+    f &lt;- P/(kP + P)
+    dAlg &lt;- r * f * Alg
+    dP   &lt;- - r * 1/Y * f * Alg
+    list(c(dAlg, dP))
+  })
+}
+y &lt;- c(Alg = 0.1, P = 0.2) # in mg/L
+parms &lt;- c(r = 0.1, kP = 5e-3, Y = 41) # Y = C:P mass ratio
+```
+
+#### Where do parameters come from?
+
+* `\(r\)`, `\(k_P\)` derived from lab experiments
+* `\(Y\)` first guess from stoichiometry
+
+
+```r
+library("marelac")
+redfield(1, species="P", method="mass")
+```
+
+```
+##          C        H        O        N P
+## 1 41.10363 8.558477 56.82016 7.235388 1
+```
+
+#### Simulate Model
+
+
+```r
+out &lt;- ode(y, times, model, parms)
+plot(out)
+```
+
+![](dynamic-intro_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+#### Compare Scenarios
+
+
+```r
+out1 &lt;- ode(y, times, model, parms =  c(r = 0.2, kP = 5e-3, Y = 41))
+out2 &lt;- ode(y, times, model, parms =  c(r = 0.1, kP = 1e-2, Y = 50))
+
+plot(out1, out2)
+legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
+```
+
+![](dynamic-intro_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+
+]
+
 
 ---
 
@@ -373,7 +560,7 @@ for (i in 1:nrow(state)) {
 par(mfrow = c(3, 1))
 ```
 
-![](dynamic-intro_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+![](dynamic-intro_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
 
 ```r
 plot(S ~ D, data = state, type = "l")
@@ -381,7 +568,7 @@ plot(X ~ D, data = state, type = "l")
 plot(S * X ~ D, data = state, type = "l")
 ```
 
-![](dynamic-intro_files/figure-html/unnamed-chunk-6-2.png)&lt;!-- --&gt;
+![](dynamic-intro_files/figure-html/unnamed-chunk-12-2.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -446,9 +633,11 @@ as is without warranty.
 ## Bibliography
 
 .scrollable[
-&lt;a name=bib-deSolve_jss&gt;&lt;/a&gt;[Soetaert, K., T. Petzoldt, and R. Setzer](#cite-deSolve_jss) (2010b). "Solving
-Differential Equations in R: Package 'deSolve'". In: _Journal of Statistical Software_ 33.9, pp. 1-25. ISSN:
-1548-7660. URL: [http://www.jstatsoft.org/v33/i09](http://www.jstatsoft.org/v33/i09).
+&lt;a name=bib-deSolve_jss&gt;&lt;/a&gt;[Soetaert, K., T. Petzoldt, and R.
+Setzer](#cite-deSolve_jss) (2010b). "Solving Differential Equations in
+R: Package 'deSolve'". In: _Journal of Statistical Software_ 33.9, pp.
+1-25. ISSN: 1548-7660. URL:
+[http://www.jstatsoft.org/v33/i09](http://www.jstatsoft.org/v33/i09).
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

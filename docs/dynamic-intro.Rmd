@@ -49,6 +49,7 @@ library("kableExtra")
 library("DiagrammeR")
 library("deSolve")
 library("rootSolve")
+library("marelac")
 mypar <- list(las=1, cex.lab=1.4, cex.axis=1.4, lwd=2)
 ```
 
@@ -319,42 +320,240 @@ N_t = N_{t-1} + r\cdot N_{t-1}
 
 ---
 
-## Numerical Integration with deSolve: the naive way
+### Numerical Integration with deSolve: the Simple Way
 
-* package **deSolve** `r Citep(bib, "deSolve_jss")` provides all necessary tools and supports
-a consistent workflow:
+.pull-left[
+#### Logistic growth
 
-* define the model as a function
-* use ode
-* use plot
+$\frac{dN}{dt} = rN(1-N/K)$
+
+#### Model formulation close to mathematical notation
+
+```{r, ode-naive, eval=FALSE, echo=TRUE}
+library("deSolve")
+model <- function (time, y, parms) {
+  with(as.list(c(y, parms)), {
+  {{dN <- r * N * (1 - N / K)}}
+    list(c(dN))
+  })
+}
+y0 <- c(N = 0.1)
+parms <- c(r = 0.1, K = 10)
+times <- seq(0, 100, 1)
+```
+]
+
+.pull-right[
+#### Solve with `ode`
+
+```{r, echo=TRUE, eval=FALSE}
+out <- ode(y0, times, model, parms)
+```
+
+#### Plot
+
+```{r, echo=TRUE, eval=FALSE}
+plot(out)
+```
+
+
+```{r, ode-naive2, eval=TRUE, echo=FALSE, fig.width=6, fig.height=4}
+par(las=1, cex.lab=1.5, cex.axis=1.5, mar=c(5,5,1.5,0)+.1)
+library("deSolve")
+model <- function (time, y, parms) {
+  with(as.list(c(y, parms)), {
+    dN <- r * N * (1 - N / K)
+    list(c(dN))
+  })
+}
+y0 <- c(N = 0.1)
+parms <- c(r = 0.1, K = 10)
+times <- seq(0, 100, 1)
+out <- ode(y0, times, model, parms)
+plot(out)
+```
+]
 
 ---
+## What is deSolve?
 
-## Runge-Kutta, ODEPACK, deSolve, part I
+.pull-left[ 
+
+#### An **R package** to solve differential equations
+
+* numerical simulation of **initial value problems**
+* ODE, PDE, DAE, DDE
+* popular *industry class solvers* from ODEPACK $^1$
+* `+` classical Euler and Runge-Kutta solvers
+* convenience tools (e.g. `plot`, forcings, events) 
+* extensive documentation, e.g.
+  `r Citep(bib, "deSolve_jss")`
+]
+
+.pull-right[
+
+#### Part of an "Ecosystem" for dynamical simulations
+* packages: rootSolve, bvpSolve, FME, reacTran, ...
+* books, websites, [StackOverflow]()
+
+#### More:
+* See [CRAN Task View](https://cran.r-project.org/web/views/DifferentialEquations.html) for related packages
+]
+
+$^1$ Thanks to the great authors (ctb=contributors) of the original algorithms who made their code publicly available:
+
+Peter N. Brown [ctb] (files ddaspk.f, dvode.f, zvode.f), George D. Byrne [ctb] (files dvode.f, zvode.f), Ernst Hairer [ctb] (files radau5.f, radau5a), Alan C. Hindmarsh [ctb] (files ddaspk.f, dlsode.f, dvode.f, zvode.f, opdkmain.f, opdka1.f), Cleve Moler [ctb] (file dlinpck.f), Linda R. Petzold [ctb] (files ddaspk.f, dlsoda.f), Youcef Saad [ctb] (file dsparsk.f), Clement W. Ulrich [ctb] (file ddaspk.f)
+
+---
+## What is `ode`?
+
+#### `ode`
+* top-level function to call one of the solvers
+* default: `lsoda`
+* Livermore solver for Ordinary Differential Equations, automatic
+
+#### `lsoda`, `adams`, `bdf`, `vode`, ...?
+
+* stiff systems: `bdf`: tries hard to solve the system
+* sometimes, `adams` may be faster for simple problems 
+* default `lsoda` switches automatically between `bdf`and `adams`
+
+#### `euler`, `rk4`, `ode45`, ...
+
+* for specific problems
+
+#### `ode.1D`, `ode.3d`, ... `dde` 
+
+* see docs
 
 
-* approaches to resolve the integration error
-* additional time steps and use of polynomials: RK-Methods
-    * more precise, but precision depends on pre-defined time step
-    * problem: either not precise enough or too much work
+---
+## Automatic Step Size
+
+.pull-left[
+#### External and internal step size
+
+* user specifies tolerances `atol`, `rtol` = 1e-6
+* solver **adapts** internal step size to meet precision
+* results returned at pre-specified **external** time points
+
+
+#### Fixed-step solvers
+
+* `euler`, `rk2`, `rk4`
+* problem: either not precise enough or too much work
     * danger of instability
     * optimum time step can vary over time
     * stiff systems: some states change faster than others
-* adaptive step size, guaranteed precision
-    * different ways to appraoch this
-    * combination of two RK methods
-    * iteration methods, e.g. Adams or BDF
-    * lsoda: switches between Adams (for stiff) and BDF (for non-stiff) regions
-    
+* `rk4` was very popular, as it is very easy to implement
+* use only if you know why 
+
+]
+
+.pull-right[
+
+```r
+out <- ode(y0, 
+*  times = 1:10, # external time steps
+  model, 
+  parms, 
+  atol = 1e-6, # absolute tolerance
+  rtol = 1e-6  # relative tolerance
+)
+```
+]
+
+
+---
+## Resource Limited Growth
+
+#### Two state variables
+* Nutrients, Algae
+* functional response (e.g. Holling, Monod, ...)
+* feedback
+
+
+.pull-left[
+
+```{r echo=FALSE, eval=TRUE}
+library(DiagrammeR)
+
+grViz("digraph feedback {
+         graph [rankdir = 'LR']
+           node [shape = box, penwidth=2, fontname = 'Helvetica']
+             Nutrient, Algae
+           node [shape = none, fontsize=10]
+             growth
+           edge [penwidth=1.5]
+             Nutrient -> growth -> Algae 
+           edge [penwidth=0.7, tailport = 'n', headport = 'n', constraint = false, color=tomato]
+             Algae -> growth 
+}")
+```
+]
+
+.pull-right[
+
+$$
+\frac{d\mbox{Algae}}{dt} = r \cdot f(\mbox{Nutrients}) \cdot \mbox{Algae}
+$$
+$$
+\frac{d\mbox{Nutrients}}{dt} = - \frac{1}{Yield} \cdot r \cdot f(\mbox{Nutrients}) \cdot  \mbox{Algae} 
+$$
+]
+
 
 ---
 
 ## Resource Limited Growth
 
+.scrollable[
 
-* algae and phosphorus
-* stoichiometry, package marelac
-* functional response
+#### The Model
+
+```{r, resource-limited, echo=TRUE, eval=TRUE}
+model <- function (time, y, parms) {
+  with(as.list(c(y, parms)), {
+    f <- P/(kP + P)
+    dAlg <- r * f * Alg
+    dP   <- - r * 1/Y * f * Alg
+    list(c(dAlg, dP))
+  })
+}
+y <- c(Alg = 0.1, P = 0.2) # in mg/L
+parms <- c(r = 0.1, kP = 5e-3, Y = 41) # Y = C:P mass ratio
+```
+
+#### Where do parameters come from?
+
+* $r$, $k_P$ derived from lab experiments
+* $Y$ first guess from stoichiometry
+
+```{r, , echo=TRUE, eval=TRUE}
+library("marelac")
+redfield(1, species="P", method="mass")
+```
+
+#### Simulate Model
+
+```{r , echo=TRUE, eval=TRUE, fig.width=8, fig.height=4}
+out <- ode(y, times, model, parms)
+plot(out)
+```
+
+#### Compare Scenarios
+
+```{r , echo=TRUE, eval=TRUE, fig.width=8, fig.height=4}
+out1 <- ode(y, times, model, parms =  c(r = 0.2, kP = 5e-3, Y = 41))
+out2 <- ode(y, times, model, parms =  c(r = 0.1, kP = 1e-2, Y = 50))
+
+plot(out1, out2)
+legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
+```
+
+
+]
+
 
 ---
 
