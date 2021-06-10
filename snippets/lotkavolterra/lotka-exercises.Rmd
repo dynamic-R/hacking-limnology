@@ -1,0 +1,113 @@
+---
+title: "Lotka-Volterra-model with resource dependency"
+language: EN
+output:
+  html_document:
+    keep_md: yes
+---
+
+## Basic model
+
+
+### Equations
+
+
+
+|                                                              |                      |
+|:-------------------------------------------------------------|---------------------:|
+|$\frac{dX}{dt} = a \cdot  X - b \cdot X \cdot Y$              | prey (producer)      |
+|$\frac{dY}{dt} = g \cdot b \cdot X \cdot Y - e \cdot Y$       | predator (consumer)  |
+
+
+**ToDo** use consistent naming
+
+
+
+## Model with logistic term
+
+### Implementation
+
+```{r}
+require(deSolve)   
+state.ini <- c(X=300, Y=10)            # state variable initial conditions
+parms     <- c(a=0.05, K=500, b=0.0002, g=0.8, e=0.03)  # parameter values
+
+LVmodel <- function(t, state, parameters) { 
+  with (as.list(c(state, parameters)), {
+    Growth.X     <- a*X*(1-X/K)
+    Grazing.Y    <- b*X*Y
+    Mortality.Y  <- e*Y
+    dX.dt <- Growth.X  - Grazing.Y
+    dY.dt <- g*Grazing.Y - Mortality.Y
+    return (list(c(dX.dt, dY.dt),  # vector of derivatives
+                 sum = X+Y))       # output variable
+  })
+}
+times <- 1:100
+out   <- ode(y = state.ini, func = LVmodel, times = times, parms = parms)
+plot(out, mfrow = c(1,3))
+```
+
+
+### Equations
+
+
+## Resouce dependent model
+
+
+
+|                                                              |                      |
+|:-------------------------------------------------------------|---------------------:|
+|$\frac{dS}{dt} = s_{in}(t) - b \cdot S \cdot P + g \cdot K$   | resource (substrate) |
+|$\frac{dP}{dt} = c \cdot S \cdot P - d \cdot K \cdot P$       | prey (producer)      |
+|$\frac{dK}{dt} = e \cdot P \cdot K - f \cdot K$               | predator (consumer)  |
+|                                                              |                      |
+| with:                                                        |                      |
+|$s_{in}(t) = s_{in} + f_{pulse}(t, s_{start}, s_{duration}, s_{pulse})$ | substrate import|
+
+
+Here $c$ controls the growth rate of the producer, $d$ and
+$e$ describe interaction between producer and consumer and 
+$f$ mortality of the consumer.
+
+The additional equation $dS/dt$ describes an essential resource $S$, substrate), 
+necessary for growth of the producer. The parameter $b$ defines resource utilization by the producer and $g$ allows to simulate substrate recycling.
+
+An additional time-dependent **forcing function** $s_{in}(t)$, allows to simulate
+a substrate import pulse with 
+`s_pulse` = height, `s_start` = time and `s_duration` = duration of additional 
+substrate import.
+
+
+## Exercises
+
+Aim is to understand the most important properties of the model. 
+It is of course possible to analyse the model mathematically with pen and paper
+or by simulation with trial and error. Our approach is to start with the latter
+and then go back to theory.
+
+**Important:** It is always a good idea to make some minutes during 
+experimentation. Write down, how parameters change system behavior with respect
+to amplitude, frequency and shape of the time series. In addition to time 
+series plots, plot also the states.
+
+
+
+## References
+
+Hindmarsh, Alan C. (1983) ODEPACK, A Systematized Collection of ODE
+Solvers. In: Stepleman, R.W. et al. (ed.) Scientific Computing, 
+p.55-64. North-Holland, Amsterdam.
+
+Soetaert, Karline; Petzoldt, Thomas and R. Woodrow Setzer (2010)
+Solving Differential Equations in R: Package deSolve. Journal of
+Statistical Software, 33(9), 1-25. http://www.jstatsoft.org/v33/i09/
+
+Volterra, V. (1926) Fluctuations in the Abundance of a Species
+considered Mathematically. Nature 118, 558-560.
+
+-----
+
+
+
+[ThPe](http://tu-dresden.de/Members/thomas.petzoldt)
