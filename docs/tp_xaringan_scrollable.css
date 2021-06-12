@@ -15,3 +15,7 @@
   height: 80%;
   overflow-y: auto;
 }
+
+.remark-slide-scaler {
+    overflow-y: auto;
+}
