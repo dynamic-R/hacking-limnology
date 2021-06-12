@@ -645,6 +645,26 @@ plot(S * X ~ D, data = state, type = "l")
 
 ### Lotka-Volterra's Predator and Prey
 
+```{r diag-LV, echo=FALSE, fig.width=14, fig.height=4}
+grViz("digraph lotka {
+         graph [rankdir = 'LR']
+           node [shape = box, penwidth=2, fontname = 'Helvetica']
+             Predator, Prey
+           node [shape = octagon, penwidth=0.5, style='rounded', fixedsize=25, fontsize=8]
+             Source Sink
+           node [shape = none, fontsize=10]
+             growth death grazing
+           edge [penwidth=1.5]
+             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink
+           edge [penwidth=0.7, tailport = 'n', headport = 'n', constraint = false, color=tomato]
+             Prey -> growth
+             Predator -> grazing
+           edge [penwidth=0.7, tailport = 's', headport = 's', constraint = false, color=tomato]
+             Prey -> grazing
+             Predator -> death
+
+}")
+```
 
 * state diagram, cycles
 * damped cycle if we introduce a Monod term
@@ -656,11 +676,11 @@ plot(S * X ~ D, data = state, type = "l")
 
 ## Lotka Voltera Model
 
-### prey grows $\rightarrow$ predator feeds on prey $\rightarrow$ predator dies
+```{r diag-LV, echo=FALSE, fig.width=14, fig.height=4}
+```
 
 
-
-  $$\frac{dX}{dt} = \mbox{Growth} - \mbox{Grazing} \qquad \mbox{(Prey)}$$ 
+$$\frac{dX}{dt} = \mbox{Growth} - \mbox{Grazing} \qquad \mbox{(Prey)}$$ 
 
 $$\frac{dY}{dt} = g \cdot \mbox{Grazing} - \mbox{Mortality}  \qquad \mbox{(Predator)}$$
 #### With:
@@ -670,10 +690,17 @@ $$\frac{dY}{dt} = g \cdot \mbox{Grazing} - \mbox{Mortality}  \qquad \mbox{(Preda
 * $\mbox{Grazing} \qquad= b \cdot X \cdot Y$ &nbsp;&nbsp; (interaction)
 
 ---
+```{css}
+.remark-slide-number {
+    display: none;
+}
+```
 
-## Implementation
+## Lotka-Volterra Model
 
-```{r, echo=TRUE, fig.width=12, fig.height=4}
+### Implementation
+
+```{r, echo=TRUE, fig.width=14, fig.height=4}
 require(deSolve)   
 y0      <- c(X=300, Y=10)            # state variable initial conditions
 parms   <- c(a=0.05, K=500, b=0.0002, g=0.8, e=0.03)  # parameter values
