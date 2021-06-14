@@ -850,8 +850,53 @@ plot(out, mfrow = c(1, 3), las=1)
 
 ## Efficient Model Formulation in Matrix Style
 
+#### Two preys and two preadors $\rightarrow$ 4 equations
+```{r, echo=TRUE}
+model <- function(t, n, parms) {
+  with(as.list(c(n, parms)), {
+    dn1 <- r1 * n1 - a13 * n1 * n3
+    dn2 <- r2 * n2 - a24 * n2 * n4
+    dn3 <- a13 * n1 * n3 - r3 * n3
+    dn4 <- a24 * n2 * n4 - r4 * n4
+    return(list(c(dn1, dn2, dn3, dn4)))
+  })
+}
 
-* multi-species predator-prey model
+times <- seq(from=0, to=500, by = 0.1)
+n0  <- c(n1=1, n2=1, n3=2, n4=2)
+parms <- c(r1 = 0.1, r2=0.1, r3=0.1, r4=0.1,  # net growth = birth - death
+          a13=0.2, a24 = 0.1                  # interaction
+)
+
+out <- ode(n0, times, model, parms)
+```
+
+#### Matrix formulation: appears as one single equation
+
+```{r, echo=TRUE, fig.height=8}
+model <- function(t, n, parms) {
+  with(parms, {
+   {{dn <- r * n  + n * (A %*% n)}}
+    return(list(dn))
+  })
+}
+
+parms <- list(
+  r = c(r1 = 0.1, r2 = 0.1, r3 = -0.1, r4 = -0.1),
+  ## pairwise interactions:
+  A = matrix(c(0.0, 0.0, -0.2,  0.0,    # prey 1
+               0.0, 0.0,  0.0, -0.1,    # prey 2
+               0.2, 0.0,  0.0,  0.0,    # predator 1; eats prey 1
+               0.0, 0.1,  0.0,  0.0),   # predator 2; eats prey 2
+               nrow = 4, ncol = 4, byrow = TRUE)
+)
+
+out <- ode(n0, times, model, parms)
+plot(out, las=1)
+```
+
+
+
 
 ---
 
