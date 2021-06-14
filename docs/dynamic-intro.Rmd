@@ -81,9 +81,16 @@ The introduction will demonstrate selected examples: growth of organisms, predat
 
 ---
 
-### Example: Predator-Prey model
+### Example 1: Predator-Prey model
 
 ![Lotka-Volterra time series](img/predprey_ts.gif)![Lotka-Volterra state diagram](img/predprey_state.gif)
+
+---
+
+### Example 2: SIR model - Flatten the curve
+
+<iframe src="https://weblab.hydro.tu-dresden.de/apps/sir-app/" width=1200px, height=600px></iframe>
+
 
 ---
 
