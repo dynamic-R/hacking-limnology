@@ -42,7 +42,8 @@ For the time being, please consult https://desolve-r-forge.r-project.org
 ### `r Sys.Date()`
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, fig.width=14, 
+                      fig.height=6, dev.args = list(pointsize=20))
 library("dplyr")
 library("tidyr")
 library("kableExtra")
@@ -195,7 +196,7 @@ $${
 \frac{dX}{dt} = \mbox{import} - \mbox{export}\\
 }$$
 
-```{r diag-im-ex, echo=FALSE, fig.width=14, fig.height=4}
+```{r diag-im-ex, echo=FALSE, fig.height=4}
 grViz("digraph feedback {
          graph [rankdir = 'LR']
            node [shape = box, penwidth=2, fontname = 'Helvetica']
@@ -220,7 +221,7 @@ $${\frac{dN}{dt} = \mbox{birth} - \mbox{death}\\
 \frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
 \frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
 }$$
-```{r echo=FALSE, fig.width=14, fig.height=4}
+```{r echo=FALSE, fig.height=4}
 grViz("digraph feedback {
          graph [rankdir = 'LR']
            node [shape = box, penwidth=2, fontname = 'Helvetica']
@@ -240,20 +241,19 @@ grViz("digraph feedback {
 
 ---
 
-## Analytical Integration and the Euler Method
+## Analytical Integration
 
-Integration can be done analytically or with the computer
 
 
 .pull-left[
-```{r echo=FALSE, fig.height=3}
-par(mar=c(4, 5, 0, 1)+.1, las=1, cex.lab=2)
+```{r expgrowth, echo=FALSE, fig.height=4, fig.width=10}
+par(mar=c(4, 5, 0, 1)+.1, las=1)
 r    <- 0.5
 N0   <- 10
 dt   <- 0.1
 time <- seq(0, 10, dt)
 N <- N0 * exp(r * time)
-plot(time, N, type="l", cex.axis=1.4)
+plot(time, N, type="l")
 ```
 ```r
 r    <- 0.5
@@ -267,24 +267,24 @@ plot(time, N, type="l")
 ]
 
 .pull-right[
-$${
-\frac{dN}{dt} = r\cdot N\\
-\int_0^t \frac{dN}{dt} = \int_0^t r\cdot N\\
-\int_0^t \frac{1}{N} dN = \int_0^t r dt\\
-\ln(N)=rt + c\\
-N_t = N_0 e^{rt}\\
-}$$
+\begin{align}
+\frac{dN}{dt} &= r\cdot N\\
+\int_0^t \frac{dN}{dt} &= \int_0^t r\cdot N\\
+\int_0^t \frac{1}{N} dN &= \int_0^t r dt\\
+\ln(N) &= rt + c\\
+N_t &= N_0 e^{rt}\\
+\end{align}
 ]
 
 ---
 
-## Numerical Integration and the Euler Method
+## Numerical Integration with the Euler Method
 
 
 .pull-left[
 
-```{r echo=FALSE, fig.height=3}
-par(mar=c(4, 5, 0, 1)+.1, las=1, cex.lab=2)
+```{r expgrowth-euler, echo=FALSE, fig.height=4, fig.width=10}
+par(mar=c(4, 5, 0, 1)+.1, las=1)
 N <- numeric(length(time))
 
 N[1] <- N0
@@ -310,11 +310,11 @@ plot(time, N, type = "l")
 ]
 
 .pull-right[
-$${
-\frac{dN}{dt} = r\cdot N\\
-\frac{\Delta N}{\Delta t} = r\cdot N\\
-N_t = N_{t-1} + r\cdot N_{t-1}
-}$$
+\begin{align}
+\frac{dN}{dt} &= r\cdot N\\
+\frac{\Delta N}{\Delta t} &= r\cdot N\\
+N_t &= N_{t-1} + r\cdot N_{t-1}
+\end{align}
 ]
 
 ---
@@ -356,8 +356,8 @@ plot(out)
 ```
 
 
-```{r, ode-naive2, eval=TRUE, echo=FALSE, fig.width=6, fig.height=4}
-par(las=1, cex.lab=1.5, cex.axis=1.5, mar=c(5,5,1.5,0)+.1)
+```{r, ode-naive2, eval=TRUE, echo=FALSE, fig.width=10, fig.height=5}
+par(las=1, mar=c(5,5,1.5,1)+.1)
 library("deSolve")
 model <- function (time, y, parms) {
   with(as.list(c(y, parms)), {
@@ -474,8 +474,7 @@ out <- ode(y0,
 
 
 
-
-```{r diag-resource-limited, echo=FALSE, eval=TRUE, fig.height=3, fig.width=14}
+```{r diag-resource-limited, echo=FALSE, eval=TRUE, fig.height=2}
 library(DiagrammeR)
 
 grViz("digraph feedback {
@@ -495,18 +494,24 @@ grViz("digraph feedback {
 ---
 
 
-## System of equations
+### System of equations
 
-```{r diag-resource-limited, echo=FALSE, eval=TRUE, fig.height=3, fig.width=14}
+```{r diag-resource-limited, echo=FALSE, eval=TRUE, fig.height=2}
 ```
 
-$$
-\frac{d\mbox{Algae}}{dt} = r \cdot f(\mbox{Nutrients}) \cdot \mbox{Algae}
-$$
-$$
-\frac{d\mbox{Nutrients}}{dt} = - \frac{1}{Yield} \cdot r \cdot f(\mbox{Nutrients}) \cdot  \mbox{Algae} 
-$$
+----
 
+\begin{align}
+\frac{d\mbox{Algae}}{dt} &=       & &r \cdot f(\mbox{Nutrients}) \cdot \mbox{Algae}\\
+\\
+\frac{d\mbox{Nutrients}}{dt} &=   &- & r \cdot f(\mbox{Nutrients}) \cdot  \mbox{Algae} \cdot \frac{1}{Y} 
+\end{align}
+
+with:
+
+$$
+f(\mbox{Nutrients}) =  \text{functional response, e.g. Holling I, II, III}
+$$
 
 
 ---
@@ -540,18 +545,19 @@ redfield(1, species="P", method="mass")
 
 #### Simulate Model
 
-```{r , echo=TRUE, eval=TRUE, fig.width=8, fig.height=4}
+
+```{r , echo=TRUE, eval=TRUE, fig.height=6}
 out <- ode(y, times, model, parms)
-plot(out)
+plot(out, las=1)
 ```
 
 #### Compare Scenarios
 
-```{r , echo=TRUE, eval=TRUE, fig.width=8, fig.height=4}
+```{r , echo=TRUE, eval=TRUE, fig.height=6}
 out1 <- ode(y, times, model, parms =  c(r = 0.2, kP = 5e-3, Y = 41))
 out2 <- ode(y, times, model, parms =  c(r = 0.1, kP = 1e-2, Y = 50))
 
-plot(out1, out2)
+plot(out1, out2, las=1)
 legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
 ```
 
@@ -570,7 +576,7 @@ legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
 
 ## A standard SIR model
 
-```{r diag-sir, echo=FALSE, fig.width=14, fig.height=4}
+```{r diag-sir, echo=FALSE, fig.height=4}
 grViz("digraph feedback {
          graph [rankdir = 'LR']
            node [shape = box, penwidth=2, fontname = 'Helvetica', style='filled', color='dodgerblue']
@@ -625,7 +631,7 @@ Mortality &= m \cdot I
 
 ### Code
 
-```{r SIR-solution, echo=TRUE, fig.height=6, fig.width=14}
+```{r SIR-solution, echo=TRUE, fig.width=16, fig.height=6}
 SIR <- function(t, state, parameters) {
   with (as.list(c(state, parameters)), {
 
@@ -653,7 +659,7 @@ parms <- c(
 
 times <- seq(from=0, to=365, by=1)   # time sequence, in days
 out   <- ode(y = y0, times=times, func=SIR, parms=parms)
-plot(out, las=1, col=1:2, lty=1)
+plot(out, las=1, mfrow=c(1,4))
 ```
 
 
@@ -675,14 +681,28 @@ plot(out, las=1, col=1:2, lty=1)
 * inflow and outflow
 * numerical solution
 * equilibrium
-* rootSolve and analytical solution of equlibrium
+* rootSolve and analytical solution of equilibrium
+
+---
+
+## Chemostat: Equations
+
+\begin{align}
+\frac{dAlg}{dt}  & = \mu \cdot Alg - D \cdot Alg\\
+\frac{dP}{dt}    & =  D \cdot (P_0 - P) - 1/Y \cdot \mu \cdot Alg\\
+\\
+\text{with:}\\
+\mu   & = \mu_{max} \cdot \frac{P}{kp + P}  \qquad\text{(Monod equation)}\\
+\end{align}
+
+**Todo: add drawing with symbols here**
 
 ---
 
 ## The Chemostat Code
 
 
-```{r Chemostat-dynamic, echo=TRUE, fig.height=6, fig.width=14, dev.args=list(pointsize=20)}
+```{r Chemostat-dynamic, echo=TRUE, fig.height=6, dev.args=list(pointsize=20)}
 library("deSolve")
 library("rootSolve")
 
@@ -708,7 +728,7 @@ init  <- c(Alg=0.01, P=0.05) # Phytoplankton C and Phosphorus P (mg/L)
 ## Dynamic simulation
 ## =============================================================================
 out <- ode(init, times, chemostat, parms)
-plot(out, mfrow=c(1, 3), las=1, cex.axis=1.4)
+plot(out, mfrow=c(1, 3), las=1)
 ```
 
 ---
@@ -717,7 +737,7 @@ plot(out, mfrow=c(1, 3), las=1, cex.axis=1.4)
 
 #### Steady state solution
 
-```{r chemostat-equilibrium, echo=TRUE, fig.height=12, fig.width=14, }
+```{r chemostat-equilibrium, echo=TRUE, fig.height=12}
 state <- data.frame(
   D = seq(0, 0.6, length.out = 100),
   X = 0,
@@ -747,7 +767,7 @@ plot(S * X ~ D, data = state, type = "l")
 
 ### Lotka-Volterra's Predator and Prey
 
-```{r diag-LV, echo=FALSE, fig.width=14, fig.height=4}
+```{r diag-LV, echo=FALSE, fig.height=4}
 grViz("digraph lotka {
          graph [rankdir = 'LR']
            node [shape = box, penwidth=2, fontname = 'Helvetica']
@@ -776,20 +796,24 @@ grViz("digraph lotka {
 
 ---
 
-## Lotka Voltera Model
+### Lotka Voltera Model
 
-```{r diag-LV, echo=FALSE, fig.width=14, fig.height=4}
+```{r diag-LV, echo=FALSE, fig.height=2}
 ```
 
+\begin{align}
+\frac{dX}{dt} &= \mbox{Growth} - \mbox{Grazing} \qquad & \mbox{(Prey)}\\
+\\
+\frac{dY}{dt} &= g \cdot \mbox{Grazing} - \mbox{Mortality}  \qquad & \mbox{(Predator)}
+\end{align}
 
-$$\frac{dX}{dt} = \mbox{Growth} - \mbox{Grazing} \qquad \mbox{(Prey)}$$ 
+With:
 
-$$\frac{dY}{dt} = g \cdot \mbox{Grazing} - \mbox{Mortality}  \qquad \mbox{(Predator)}$$
-#### With:
-
-* $\mbox{Growth} \qquad = a \cdot X$ &nbsp;&nbsp;&nbsp;&nbsp; (exponential growth)
-* $\mbox{Mortalily} \ \quad = -e \cdot Y$ &nbsp;&nbsp; (exponential decay)
-* $\mbox{Grazing} \qquad= b \cdot X \cdot Y$ &nbsp;&nbsp; (interaction)
+\begin{align}
+\mbox{Growth}    & = a \cdot X & \qquad \text{(exponential growth)}\\
+\mbox{Grazing}   & = b \cdot X \cdot Y & \qquad \text{(interaction)}\\
+\mbox{Mortalily} & = -e \cdot Y & \qquad \text{(exponential decay)}
+\end{align}
 
 ---
 ```{css}
@@ -798,11 +822,10 @@ $$\frac{dY}{dt} = g \cdot \mbox{Grazing} - \mbox{Mortality}  \qquad \mbox{(Preda
 }
 ```
 
-## Lotka-Volterra Model
+---
+### Lotka-Volterra Model: Implementation
 
-### Implementation
-
-```{r, echo=TRUE, fig.width=14, fig.height=4}
+```{r, echo=TRUE, fig.height=4}
 require(deSolve)   
 y0      <- c(X=300, Y=10)            # state variable initial conditions
 parms   <- c(a=0.05, K=500, b=0.0002, g=0.8, e=0.03)  # parameter values
@@ -820,7 +843,7 @@ LV <- function(t, state, parameters) {
 }
 times <- 1:1000
 out   <- ode(y = y0, func = LV, times = times, parms = parms)
-plot(out, mfrow = c(1, 3), cex.axis=1.4, cex.lab=1.4, las=1)
+plot(out, mfrow = c(1, 3), las=1)
 ```
 
 ---
