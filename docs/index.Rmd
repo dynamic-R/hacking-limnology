@@ -863,10 +863,9 @@ With:
 }
 ```
 
----
 ### Lotka-Volterra Model: Implementation
 
-```{r, echo=TRUE, fig.height=4}
+```{r, LV-basic, echo=TRUE, fig.height=4}
 require(deSolve)   
 y0      <- c(X=300, Y=10)            # state variable initial conditions
 parms   <- c(a=0.05, K=500, b=0.0002, g=0.8, e=0.03)  # parameter values
@@ -886,6 +885,7 @@ times <- 1:1000
 out   <- ode(y = y0, func = LV, times = times, parms = parms)
 plot(out, mfrow = c(1, 3), las=1)
 ```
+
 
 ---
 
