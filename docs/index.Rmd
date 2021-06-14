@@ -87,9 +87,25 @@ The introduction will demonstrate selected examples: growth of organisms, predat
 
 ---
 
-### Example 2: SIR model - Flatten the curve
+### Example 2: Nitrification in a River
+
+.center[
+![Nitrification](img/river.gif)
+]
+---
+
+### Example 3: SIR model - Flatten the curve
 
 <iframe src="https://weblab.hydro.tu-dresden.de/apps/sir-app/" width=1200px, height=600px></iframe>
+
+---
+
+### Example 4: SIR Model in 2D
+
+.center[
+![SIR 2D](img/sir2d.gif)
+]
+
 
 
 ---
