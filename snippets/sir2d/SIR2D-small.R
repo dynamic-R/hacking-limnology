@@ -3,11 +3,16 @@ library("ReacTran")  # lateral transport
 library("gifski")    # for the animation
 set.seed(123)
 
+## helper to extract 2D state matrix from 1D vector
+statematrix <- function(y, N, i) {
+  matrix(y[(i-1)*(N^2) + 1:N^2], N, N)
+}
+
 ## The model equations
 SIR2D <- function (t, y, parms)  {
-  S  <- matrix(y[1:N^2], N, N)
-  I  <- matrix(y[N^2 + 1:N^2], N, N)
-  R  <- matrix(y[2*(N^2) + 1:N^2], N, N)
+  S  <- statematrix(y, N, 1)
+  I  <- statematrix(y, N, 2)
+  R  <- statematrix(y, N, 3)
 
   infect <- beta * I * S
   recovr <- nu * I
@@ -50,7 +55,7 @@ times <- seq(0, 400, 2)
 
 
 for (tt in times) {
-  png(paste0("sir2d", 1000 + tt, ".png"), width=600, height=600)
+  png(paste0("sir2d", 1000 + tt, ".png"), width=500, height=500)
   par(cex=2, cex.lab=2, cex.axis=2, cex.main=2.5, las=1)
   par(mar=c(4,5,4,6) + 0.1)
   image(out, zlim=c(0, 60), select=2, subset=(time==tt), axes=FALSE, legend = TRUE, ask=FALSE,
@@ -58,4 +63,4 @@ for (tt in times) {
   dev.off()
 }
 
-gifski(dir(pattern="^sir.*png$"), delay=0.1)
+gifski(dir(pattern="^sir.*png$"), gif_file="sir2d.gif", delay=0.1)
