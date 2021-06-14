@@ -195,7 +195,7 @@ $${
 \frac{dX}{dt} = \mbox{import} - \mbox{export}\\
 }$$
 
-```{r echo=FALSE, fig.width=12, fig.height=4}
+```{r diag-im-ex, echo=FALSE, fig.width=14, fig.height=4}
 grViz("digraph feedback {
          graph [rankdir = 'LR']
            node [shape = box, penwidth=2, fontname = 'Helvetica']
@@ -564,6 +564,100 @@ legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
 
 * similar to resource-limited growth
 * show atol, rtol and rescaling of problems
+
+
+---
+
+## A standard SIR model
+
+```{r diag-sir, echo=FALSE, fig.width=14, fig.height=4}
+grViz("digraph feedback {
+         graph [rankdir = 'LR']
+           node [shape = box, penwidth=2, fontname = 'Helvetica', style='filled', color='dodgerblue']
+             S, I, R
+           node [shape = none, fontsize=10, style='']
+             infection, recovery, mortality
+            node [shape = octagon, penwidth=0.5, style='rounded', fixedsize=25, fontsize=8]
+             X
+           edge [penwidth=1.5]
+             S -> infection -> I
+             I -> recovery -> R
+             I -> mortality
+             mortality -> X
+}")
+```
+
+#### Total population is subdivided into 3 subpopulations
+
+* $S$: susceptible, $I$: infected, $R$: recovered
+
+This is the general scheme from which different modifications can be derived,
+e.g. an additional state variable $E$ (SEIR model) of exposed, or of deceased individuals $X$ (SIRX). It is also possible to consider multiple groups of $S$, $I$, $R$, their spatial
+distribution or influence of stochasticity.
+
+---
+
+### Equations describing spread of the disease:
+
+
+\begin{align}
+\frac{dS}{dt} &= -Infection\\
+\frac{dI}{dt} &= Infection - Recovery - Mortality\\
+\frac{dR}{dt} &= Recovery
+\end{align}
+
+where 
+
+\begin{align}
+Infection &= b \cdot I \cdot S\\
+Recovery  &= g \cdot I\\
+Mortality &= m \cdot I
+\end{align}
+
+| Name      | Value      | Description         | Unit                        |
+| --------- | ---------- | ------------------- | --------------------------- |
+| b         | 0.00000002 | infection parameter | $\mathrm{ind^{-1}~d^{-1}}$ |
+| g         | 0.07       | recovery parameter  | $\mathrm{d^{-1}}$           |
+| m         | 0.007      | mortality parameter | $\mathrm{d^{-1}}$           |
+
+
+---
+
+### Code
+
+```{r SIR-solution, echo=TRUE, fig.height=6, fig.width=14}
+SIR <- function(t, state, parameters) {
+  with (as.list(c(state, parameters)), {
+
+    Infection  <- b * S * I
+    Recovery   <- g * I
+    Mortality  <- m * I
+    
+    dS.dt      <- -Infection 
+    dI.dt      <-  Infection - Recovery - Mortality
+    dR.dt      <-  Recovery
+
+    list(c(dS.dt, dI.dt, dR.dt), # the time derivatives
+                 Population = S+I+R)    # extra output variable
+  }) 
+}
+
+y0 <- c(S = 11500000 - 1000, I = 1000, R = 0)
+
+parms <- c(
+  b = 0.00000002,    # [1/ind/d], infection parameter 
+  g = 0.07,          # [1/d],     recovery rate of infected individuals
+  m = 0.007          # [1/d],     mortality rate of infected individuals
+)
+
+
+times <- seq(from=0, to=365, by=1)   # time sequence, in days
+out   <- ode(y = y0, times=times, func=SIR, parms=parms)
+plot(out, las=1, col=1:2, lty=1)
+```
+
+
+
 
 ---
 
