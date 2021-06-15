@@ -27,19 +27,17 @@ background-image: url("img/water-light.jpg")
 
 # Numerical simulation of dynamic systems with R: an introduction
 
-## Thomas Petzoldt and Karline Soetaert
+### Thomas Petzoldt and Karline Soetaert,  `r Sys.Date()`
 
-
-### IMPORTANT NOTE
+#### IMPORTANT NOTE
 
 This slide set is work in progress and still at a **very early stage of development**.
-It works with **Chrome** and recent versions of **Edge**, wheres scrolling may have problems with Firefox.
+It works with **Chrome**, **Firefox** and recent versions of **Edge**.
 
 The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021
 
-For the time being, please consult https://desolve-r-forge.r-project.org
+For the time being, please consult http://desolve.r-forge.r-project.org
 
-### `r Sys.Date()`
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.width=14, 
@@ -280,7 +278,7 @@ N0   <- 10
 dt   <- 0.1
 time <- seq(0, 10, dt)
 N <- N0 * exp(r * time)
-plot(time, N, type="l")
+plot(time, N, type="l", ylim=c(0, 1500))
 ```
 ```r
 r    <- 0.5
@@ -301,6 +299,9 @@ plot(time, N, type="l")
 \ln(N) &= rt + c\\
 N_t &= N_0 e^{rt}\\
 \end{align}
+
+* Integral calculus = "Gold Standard" ...
+* ... but not always possible
 ]
 
 ---
@@ -318,10 +319,9 @@ N[1] <- N0
 for (i in 2:length(time)) {
   N[i] <- N[i-1] + r * N[i-1] * dt
 }
-plot(time, N, type = "l")
+plot(time, N, type = "l", lty="dashed", col="red", ylim=c(0, 1500))
 N <- N0 * exp(r * time)
-lines(time, N, lty="dashed")
-
+lines(time, N, lty="solid")
 ```
 
 
@@ -332,7 +332,8 @@ N[1] <- N0
 for (i in 2:length(time)) {
   N[i] <- N[i-1] + r * N[i-1] * dt
 }
-plot(time, N, type = "l")
+plot(time, N, type = "l", 
+     col = "red", lty = "dashed")
 ```
 ]
 
@@ -342,6 +343,10 @@ plot(time, N, type = "l")
 \frac{\Delta N}{\Delta t} &= r\cdot N\\
 N_t &= N_{t-1} + r\cdot N_{t-1}
 \end{align}
+
+* differential equation $\rightarrow$ difference equation
+* approximation with discrete time step
+* easy, but integration error
 ]
 
 ---
@@ -393,6 +398,8 @@ times <- seq(0, 100, 1)
 out <- ode(y0, times, model, parms)
 plot(out)
 ```
+
+* better performance, reduced integration error
 ]
 
 ---
@@ -415,7 +422,7 @@ plot(out)
 
 #### Part of an "Ecosystem" for dynamical simulations
 * packages: rootSolve, bvpSolve, FME, reacTran, ...
-* books, websites, [StackOverflow]()
+* books, websites, [StackOverflow](https://stackoverflow.com/search?tab=newest&q=%5br%5d%20desolve?ode)
 
 #### More:
 * See [CRAN Task View](https://cran.r-project.org/web/views/DifferentialEquations.html) for related packages
@@ -443,9 +450,9 @@ Peter N. Brown [ctb] (files ddaspk.f, dvode.f, zvode.f), George D. Byrne [ctb] (
 
 * for specific problems
 
-#### `ode.1D`, `ode.3d`, ... `dde` 
+#### `ode.1D`, ... `ode.3D`, ... `dde` 
 
-* see docs
+* see [docs](cran.r-project.org/package=deSolve/)
 
 
 ---
@@ -657,15 +664,15 @@ Mortality &= m \cdot I
 SIR <- function(t, state, parameters) {
   with (as.list(c(state, parameters)), {
 
-    Infection  <- b * S * I
-    Recovery   <- g * I
-    Mortality  <- m * I
+    Infection <- b * S * I
+    Recovery  <- g * I
+    Mortality <- m * I
     
-    dS.dt      <- -Infection 
-    dI.dt      <-  Infection - Recovery - Mortality
-    dR.dt      <-  Recovery
+    dSdt      <- -Infection 
+    dIdt      <-  Infection - Recovery - Mortality
+    dRdt      <-  Recovery
 
-    list(c(dS.dt, dI.dt, dR.dt), # the time derivatives
+    list(c(dSdt, dIdt, dRdt), # the time derivatives
                  Population = S+I+R)    # extra output variable
   }) 
 }
@@ -698,15 +705,15 @@ plot(out, las=1, mfrow=c(1,4))
 SIR_distancing <- function(t, state, parameters) {
   with (as.list(c(state, parameters)), {
     rho <- f_rho(t)
-    Infection  <- rho * b * S * I
-    Recovery   <- g * I
-    Mortality  <- m * I
+    Infection <- rho * b * S * I
+    Recovery  <- g * I
+    Mortality <- m * I
     
-    dS.dt      <- -Infection 
-    dI.dt      <-  Infection - Recovery - Mortality
-    dR.dt      <-  Recovery
+    dSdt      <- -Infection 
+    dIdt      <-  Infection - Recovery - Mortality
+    dRdt      <-  Recovery
 
-    list(c(dS.dt, dI.dt, dR.dt),      # the time derivatives
+    list(c(dSdt, dIdt, dRdt),      # the time derivatives
                  Population = S+I+R)            # extra output variable
   }) 
 }

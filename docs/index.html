@@ -26,19 +26,17 @@ background-image: url("img/water-light.jpg")
 
 # Numerical simulation of dynamic systems with R: an introduction
 
-## Thomas Petzoldt and Karline Soetaert
+### Thomas Petzoldt and Karline Soetaert,  2021-06-15
 
-
-### IMPORTANT NOTE
+#### IMPORTANT NOTE
 
 This slide set is work in progress and still at a **very early stage of development**.
-It works with **Chrome** and recent versions of **Edge**, wheres scrolling may have problems with Firefox.
+It works with **Chrome**, **Firefox** and recent versions of **Edge**.
 
 The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021
 
-For the time being, please consult https://desolve-r-forge.r-project.org
+For the time being, please consult http://desolve.r-forge.r-project.org
 
-### 2021-06-15
 
 
 
@@ -203,8 +201,8 @@ J.W. Forrester 2009.
 \frac{dX}{dt} = \mbox{import} - \mbox{export}\\
 }$$`
 
-<div id="htmlwidget-3eda3eec582bd3dd3e4c" style="width:1008px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3eda3eec582bd3dd3e4c">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f980fb3c278ccf86e885" style="width:1008px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f980fb3c278ccf86e885">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Matter\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> Matter -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 
@@ -216,8 +214,8 @@ J.W. Forrester 2009.
 \frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
 \frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
 }$$`
-<div id="htmlwidget-6db981b6c4997c894e66" style="width:1008px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6db981b6c4997c894e66">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-3608ecf289aad2fdfcbb" style="width:1008px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3608ecf289aad2fdfcbb">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Population\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> Population -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Population -> birth \n             Population -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 ---
@@ -247,6 +245,9 @@ plot(time, N, type="l")
 \ln(N) &amp;= rt + c\\
 N_t &amp;= N_0 e^{rt}\\
 \end{align}`
+
+* Integral calculus = "Gold Standard" ...
+* ... but not always possible
 ]
 
 ---
@@ -267,7 +268,8 @@ N[1] &lt;- N0
 for (i in 2:length(time)) {
   N[i] &lt;- N[i-1] + r * N[i-1] * dt
 }
-plot(time, N, type = "l")
+plot(time, N, type = "l", 
+     col = "red", lty = "dashed")
 ```
 ]
 
@@ -277,6 +279,10 @@ plot(time, N, type = "l")
 \frac{\Delta N}{\Delta t} &amp;= r\cdot N\\
 N_t &amp;= N_{t-1} + r\cdot N_{t-1}
 \end{align}`
+
+* differential equation `\(\rightarrow\)` difference equation
+* approximation with discrete time step
+* easy, but integration error
 ]
 
 ---
@@ -316,6 +322,8 @@ plot(out)
 
 
 ![](index_files/figure-html/ode-naive2-1.png)&lt;!-- --&gt;
+
+* better performance, reduced integration error
 ]
 
 ---
@@ -338,7 +346,7 @@ plot(out)
 
 #### Part of an "Ecosystem" for dynamical simulations
 * packages: rootSolve, bvpSolve, FME, reacTran, ...
-* books, websites, [StackOverflow]()
+* books, websites, [StackOverflow](https://stackoverflow.com/search?tab=newest&amp;q=%5br%5d%20desolve?ode)
 
 #### More:
 * See [CRAN Task View](https://cran.r-project.org/web/views/DifferentialEquations.html) for related packages
@@ -366,9 +374,9 @@ Peter N. Brown [ctb] (files ddaspk.f, dvode.f, zvode.f), George D. Byrne [ctb] (
 
 * for specific problems
 
-#### `ode.1D`, `ode.3d`, ... `dde` 
+#### `ode.1D`, ... `ode.3D`, ... `dde` 
 
-* see docs
+* see [docs](cran.r-project.org/package=deSolve/)
 
 
 ---
@@ -419,8 +427,8 @@ out &lt;- ode(y0,
 
 
 
-<div id="htmlwidget-d40dae092a27cc4075a3" style="width:1008px;height:144px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d40dae092a27cc4075a3">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d4a5a7eadf01ec1750b5" style="width:1008px;height:144px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d4a5a7eadf01ec1750b5">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 ---
@@ -428,8 +436,8 @@ out &lt;- ode(y0,
 
 ### System of equations
 
-<div id="htmlwidget-4dd79ed7534f0d70aef3" style="width:1008px;height:144px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4dd79ed7534f0d70aef3">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-eef35bd262ebbcc1099c" style="width:1008px;height:144px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-eef35bd262ebbcc1099c">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ----
 
@@ -521,8 +529,8 @@ legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
 
 ## A standard SIR model
 
-<div id="htmlwidget-782be85ae2eb42ace82d" style="width:1008px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-782be85ae2eb42ace82d">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\", style=\"filled\", color=\"dodgerblue\"]\n             S, I, R\n           node [shape = none, fontsize=10, style=\"\"]\n             infection, recovery, mortality\n            node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             X\n           edge [penwidth=1.5]\n             S -> infection -> I\n             I -> recovery -> R\n             I -> mortality\n             mortality -> X\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8bd7e9b64a3d675a5486" style="width:1008px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8bd7e9b64a3d675a5486">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\", style=\"filled\", color=\"dodgerblue\"]\n             S, I, R\n           node [shape = none, fontsize=10, style=\"\"]\n             infection, recovery, mortality\n            node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             X\n           edge [penwidth=1.5]\n             S -> infection -> I\n             I -> recovery -> R\n             I -> mortality\n             mortality -> X\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 #### Total population is subdivided into 3 subpopulations
 
@@ -567,15 +575,15 @@ Mortality &amp;= m \cdot I
 SIR &lt;- function(t, state, parameters) {
   with (as.list(c(state, parameters)), {
 
-    Infection  &lt;- b * S * I
-    Recovery   &lt;- g * I
-    Mortality  &lt;- m * I
+    Infection &lt;- b * S * I
+    Recovery  &lt;- g * I
+    Mortality &lt;- m * I
     
-    dS.dt      &lt;- -Infection 
-    dI.dt      &lt;-  Infection - Recovery - Mortality
-    dR.dt      &lt;-  Recovery
+    dSdt      &lt;- -Infection 
+    dIdt      &lt;-  Infection - Recovery - Mortality
+    dRdt      &lt;-  Recovery
 
-    list(c(dS.dt, dI.dt, dR.dt), # the time derivatives
+    list(c(dSdt, dIdt, dRdt), # the time derivatives
                  Population = S+I+R)    # extra output variable
   }) 
 }
@@ -611,15 +619,15 @@ plot(out, las=1, mfrow=c(1,4))
 SIR_distancing &lt;- function(t, state, parameters) {
   with (as.list(c(state, parameters)), {
     rho &lt;- f_rho(t)
-    Infection  &lt;- rho * b * S * I
-    Recovery   &lt;- g * I
-    Mortality  &lt;- m * I
+    Infection &lt;- rho * b * S * I
+    Recovery  &lt;- g * I
+    Mortality &lt;- m * I
     
-    dS.dt      &lt;- -Infection 
-    dI.dt      &lt;-  Infection - Recovery - Mortality
-    dR.dt      &lt;-  Recovery
+    dSdt      &lt;- -Infection 
+    dIdt      &lt;-  Infection - Recovery - Mortality
+    dRdt      &lt;-  Recovery
 
-    list(c(dS.dt, dI.dt, dR.dt),      # the time derivatives
+    list(c(dSdt, dIdt, dRdt),      # the time derivatives
                  Population = S+I+R)            # extra output variable
   }) 
 }
@@ -745,8 +753,8 @@ plot(S * X ~ D, data = state, type = "l")
 
 ### Lotka-Volterra's Predator and Prey
 
-<div id="htmlwidget-713b702640eeee8401d4" style="width:1008px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-713b702640eeee8401d4">{"x":{"diagram":"digraph lotka {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Predator, Prey\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             growth death grazing\n           edge [penwidth=1.5]\n             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Prey -> growth\n             Predator -> grazing\n           edge [penwidth=0.7, tailport = \"s\", headport = \"s\", constraint = false, color=tomato]\n             Prey -> grazing\n             Predator -> death\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-68c50c6c76e9e4f4a909" style="width:1008px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-68c50c6c76e9e4f4a909">{"x":{"diagram":"digraph lotka {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Predator, Prey\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             growth death grazing\n           edge [penwidth=1.5]\n             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Prey -> growth\n             Predator -> grazing\n           edge [penwidth=0.7, tailport = \"s\", headport = \"s\", constraint = false, color=tomato]\n             Prey -> grazing\n             Predator -> death\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 * state diagram, cycles
 * damped cycle if we introduce a Monod term
@@ -758,8 +766,8 @@ plot(S * X ~ D, data = state, type = "l")
 
 ### Lotka Voltera Model
 
-<div id="htmlwidget-701282396337d29a86cc" style="width:1008px;height:144px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-701282396337d29a86cc">{"x":{"diagram":"digraph lotka {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Predator, Prey\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             growth death grazing\n           edge [penwidth=1.5]\n             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Prey -> growth\n             Predator -> grazing\n           edge [penwidth=0.7, tailport = \"s\", headport = \"s\", constraint = false, color=tomato]\n             Prey -> grazing\n             Predator -> death\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-6707784ac9344622babb" style="width:1008px;height:144px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6707784ac9344622babb">{"x":{"diagram":"digraph lotka {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Predator, Prey\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             growth death grazing\n           edge [penwidth=1.5]\n             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Prey -> growth\n             Predator -> grazing\n           edge [penwidth=0.7, tailport = \"s\", headport = \"s\", constraint = false, color=tomato]\n             Prey -> grazing\n             Predator -> death\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 `\begin{align}
 \frac{dX}{dt} &amp;= \mbox{Growth} - \mbox{Grazing} \qquad &amp; \mbox{(Prey)}\\
