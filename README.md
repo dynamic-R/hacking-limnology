@@ -4,6 +4,11 @@ This repository will hold a collection of teaching examples for **Day 5** of the
 
 We will use the **R** programming language and several CRAN packages to introduce numerical simulation of differential equation models from the field of Aquatic sciences and related areas.
 
+## Slides and Examples
+
+* The slides are currently *work in progress*, a preview is found [**here**](https://dynamic-r.github.io/hacking-limnology/)
+* Workshop examples are under preparation, see folder [snippets](snippets) and the related [dynamic-R-models](https://github.com/tpetzoldt/dynamic-R-models) repository.
+
 
 
 ## Related repositories
