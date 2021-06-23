@@ -86,7 +86,6 @@ The introduction will demonstrate selected examples: growth of organisms, predat
 ---
 
 ### Example 2: Nitrification in a River
-
 .center[
 ![Nitrification](img/river.gif)
 ]

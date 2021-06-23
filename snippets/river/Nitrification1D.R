@@ -112,39 +112,42 @@ image(out1D, xlab = "time, days", ylab = "Distance, m", grid= Grid$x.mid,
       main =c("NH4","NO3","O2"), add.contour=TRUE)
 
 
-# pdf("river-lineplot.pdf")
-# par(mar=c(5,5,3,1), las=1, cex.axis=1.5, cex.main=2)
-# plot.1D(out1D,  ask=FALSE, mfrow=c(3,1), delay=10, type="l", lwd=2, cex.lab=2,
-#    ylim=list(c(0, 6), c(0, 10), c(0, 10)), xlab=c("", "", "River km"), ylab=c("NH4 (mg/L)", "NO3", "O2"))
-# dev.off()
+# for (tt in time_seq) {
+#   png(paste0("river", 1000 + tt, ".png"), width=600, height=500)
+#   par(mar=c(5,5,3,1), las=1, cex.axis=1.5, cex.main=2)
+#   plot.1D(out1D,  ask=FALSE, mfrow=c(3,1), delay=10, type="l", lwd=2, cex.lab=2,
+#           ylim=list(c(0, 6), c(0, 10), c(0, 10)),
+#           xlab=c("", "", "River km"), ylab=c("NH4 (mg/L)", "NO3", "O2"),
+#           subset = (time == tt))
+#   dev.off()
+# }
+#
+
+plot_poly <- function(data, time) {
+  poly <- function(x, y, pcol, ...) {
+    plot(x, y, type="n", las=1, xlab="", ...)
+    polygon(x, y, col=pcol, lty="blank")
+    mtext(side=1, line=1.5, text="time")
+  }
+  y <- data[time,-1]
+  NH4 <- y[1:N]
+  NO3 <- y[(N+1):(2*N)]
+  O2  <- y[(2*N+1):(3*N)]
+  x <- c(1, 1:N, N)
+
+  poly(x, c(0, NH4, 0), ylim=c(0, 6), pcol="#a6cee3", ylab="NH4 (mg/L)")
+  poly(x, c(0, NO3, 0), ylim=c(0, 10), pcol="#b2df8a", ylab="NO3 (mg/L)")
+  poly(x, c(0, O2, 0), ylim=c(0, 10), pcol="#1f78b4", ylab="O2 (mg/L)")
+}
 
 
-for (tt in time_seq) {
-  png(paste0("river", 1000 + tt, ".png"), width=600, height=500)
-  par(mar=c(5,5,3,1), las=1, cex.axis=1.5, cex.main=2)
-  plot.1D(out1D,  ask=FALSE, mfrow=c(3,1), delay=10, type="l", lwd=2, cex.lab=2,
-          ylim=list(c(0, 6), c(0, 10), c(0, 10)),
-          xlab=c("", "", "River km"), ylab=c("NH4 (mg/L)", "NO3", "O2"),
-          subset = (time == tt))
+
+for (tt in time_seq)  {
+  png(paste0("river", 1000 + tt, ".png"), width=1400, height=800, pointsize = 24)
+  par(mfrow=c(3,1))
+  par(mar=c(3,5,1,0), las=1, cex.axis=1.4, cex.lab=1.4, cex.main=2)
+  plot_poly(out1D, tt)
   dev.off()
 }
 gifski(dir(pattern="^river.*png$"), gif_file = "river.gif", delay=1/25)
 
-# #library(Cairo)
-# pdf("river-image1D.pdf", width=9, height=4)
-# #CairoSVG("river-image1D.svg", width=8, height=4)
-# image(out1D, mfrow=c(1,3), grid=Grid$x.mid, add.contour=TRUE,
-#   ylab="River km", main=c("N-NH4 (mg/L)", "N-NO3 (mg/L)", "O2 (mg/L)"), las=1)
-# dev.off()
-#
-# main <- c("N-NH4 (mg/L)", "N-NO3 (mg/L)", "O2 (mg/L)")
-# for (i in 1:3) {
-#   pdf(paste0("river-image1D-",i,".pdf"), width=4, height=3)
-#   #CairoSVG("river-image1D-v.svg", width=8, height=4)
-#   image(out1D, mfrow=c(1,1), grid=Grid$x.mid, add.contour=TRUE, xlab="time", which=i,
-#       ylab="River km", main=main[i], axes=FALSE, legend=TRUE)
-#   axis(1)
-#   axis(2, at=seq(0,10,2)*1e4, label=seq(0,100,20))
-#   dev.off()
-# }
-#
