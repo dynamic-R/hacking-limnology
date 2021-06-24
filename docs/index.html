@@ -229,8 +229,8 @@ class: page-font-large
 \frac{dX}{dt} = \mbox{import} - \mbox{export}\\
 }$$`
 
-<div id="htmlwidget-a6e5c526ca8a54319e5a" style="width:1008px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a6e5c526ca8a54319e5a">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             X\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> X -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-b0b70777683a0ead98b7" style="width:1008px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b0b70777683a0ead98b7">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             X\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             import export\n           edge [penwidth=1.5]\n             Source -> import -> X -> export -> Sink\n         \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 `\(X\)` = .gray[any quantity: matter, energy, information]
 
@@ -242,8 +242,8 @@ class: page-font-large
 \frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N = b \cdot N - d \cdot N = (b-d) \cdot N \\
 \frac{dN}{dt} = r \cdot N\\
 }$$`
-<div id="htmlwidget-0d524b9f960f71645149" style="width:1008px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0d524b9f960f71645149">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             \"Population N\"\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> \"Population N\" -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             \"Population N\" -> birth \n             \"Population N\" -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-a25d416619a714e7d261" style="width:1008px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a25d416619a714e7d261">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             \"Population N\"\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             birth death\n           edge [penwidth=1.5]\n             Source -> birth -> \"Population N\" -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             \"Population N\" -> birth \n             \"Population N\" -> death\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 ---
@@ -319,7 +319,7 @@ N_t &amp;= N_{t-1} + r\cdot N_{t-1}
 
 ---
 
-### Numerical Integration Made Simple with deSolve
+### Numerical Integration Made Easy with deSolve
 
 .pull-left[
 #### Logistic growth
@@ -362,78 +362,74 @@ plot(out)
 ]
 
 ---
-## What is deSolve?
+## R package deSolve
 
 .pull-left[ 
+#### Numerical solution of differential equations
 
-#### An **R package** to solve differential equations
-
-* numerical simulation of **initial value problems**
-* ODE, PDE, DAE, DDE
-* popular *industry class solvers* from ODEPACK `\(^1\)`
-* `+` classical Euler and Runge-Kutta solvers
+* **initial value problems**, .gray[ODE, PDE, DAE, DDE]
+* popular **industry class solvers** from ODEPACK&lt;sup&gt;1&lt;/sup&gt;&lt;br&gt;
+  .gray[and classical Euler and Runge-Kutta solvers]
 * convenience tools (e.g. `plot`, forcings, events) 
-* extensive documentation, e.g.
-  ([Soetaert, Petzoldt, and Setzer, 2010b](http://www.jstatsoft.org/v33/i09))
 ]
+
 
 .pull-right[
-
 #### Part of an "Ecosystem" for dynamical simulations
-* packages: rootSolve, bvpSolve, FME, reacTran, ...
-* books, websites, [StackOverflow](https://stackoverflow.com/search?tab=newest&amp;q=%5br%5d%20desolve?ode)
 
-#### More:
+* packages: rootSolve, bvpSolve, FME, reacTran, ...
 * See [CRAN Task View](https://cran.r-project.org/web/views/DifferentialEquations.html) for related packages
+* extensive documentation: books, websites,
+[mailing list](https://stat.ethz.ch/mailman/listinfo/r-sig-dynamic-models), 
+[StackOverflow](https://stackoverflow.com/search?tab=newest&amp;q=%5br%5d%20desolve?ode)
 ]
 
-`\(^1\)` Thanks to the great authors (ctb=contributors) of the original algorithms who made their code publicly available:
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+`\(^1\)` Thanks to the great ODEPACK authors (ctb=contributors) who made their code publicly available:
 
 Peter N. Brown [ctb] (files ddaspk.f, dvode.f, zvode.f), George D. Byrne [ctb] (files dvode.f, zvode.f), Ernst Hairer [ctb] (files radau5.f, radau5a), Alan C. Hindmarsh [ctb] (files ddaspk.f, dlsode.f, dvode.f, zvode.f, opdkmain.f, opdka1.f), Cleve Moler [ctb] (file dlinpck.f), Linda R. Petzold [ctb] (files ddaspk.f, dlsoda.f), Youcef Saad [ctb] (file dsparsk.f), Clement W. Ulrich [ctb] (file ddaspk.f)
 
 ---
+class: page-font-large
+
 ## What is `ode`?
 
-#### `ode`
-* top-level function to call one of the solvers
-* default: `lsoda`
+* **`ode`** is used to call one of the solvers
+* then the solver calls the model function at adequate time steps
+* the model function contains the **derivatives** of the system
+
+
+## Solvers
+* default: .red[**`lsoda`**]
 * Livermore solver for Ordinary Differential Equations, automatic
+* switches between stiff and non-stiff solver
 
-#### `lsoda`, `adams`, `bdf`, `vode`, ...?
 
-* stiff systems: `bdf`: tries hard to solve the system
-* sometimes, `adams` may be faster for simple problems 
-* default `lsoda` switches automatically between `bdf`and `adams`
 
-#### `euler`, `rk4`, `ode45`, ...
 
-* for specific problems
-
-#### `ode.1D`, ... `ode.3D`, ... `dde` 
-
-* see [docs](cran.r-project.org/package=deSolve/)
+... other solvers, fine-tuning and pitfalls, see [docs](cran.r-project.org/package=deSolve/)
 
 
 ---
 ## Automatic Step Size
 
 .pull-left[
-#### External and internal step size
+#### Internal time step size and output steps
 
-* user specifies tolerances `atol`, `rtol` = 1e-6
-* solver **adapts** internal step size to meet precision
-* results returned at pre-specified **external** time points
+Most solvers adapt integration steps automatically,&lt;br&gt; to maintain pre-defined precision.
+
+User can specify tolerances **`atol`**, **`rtol`**, default: `\(10^{-6}\)`
+
+Outputs collected at pre-specified time points.
 
 
-#### Fixed-step solvers
+#### Fixed-step solvers: `euler`, `rk2`, `rk4`
 
-* `euler`, `rk2`, `rk4`
-* problem: either not precise enough or too much work
-    * danger of instability
-    * optimum time step can vary over time
-    * stiff systems: some states change faster than others
-* `rk4` was very popular, as it is very easy to implement
-* use only if you know why 
+still quite popular, because easy to implement
+
+`\(\rightarrow\)` problems with precision, CPU effort, stability
+
+`\(\rightarrow\)` useful in special cases
 
 ]
 
@@ -441,14 +437,31 @@ Peter N. Brown [ctb] (files ddaspk.f, dvode.f, zvode.f), George D. Byrne [ctb] (
 
 ```r
 out &lt;- ode(y0, 
-*  times = 1:10, # external time steps
+*  times = 1:10, # output time steps
   model, 
   parms, 
   atol = 1e-6, # absolute tolerance
   rtol = 1e-6  # relative tolerance
 )
 ```
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+* use .red[**`lsoda`**]
+* no need to use very small output steps
+* keep tolerances in mind,&lt;br&gt; consider to rescale huge or tiny values
 ]
+
+---
+class: page-font-huge
+
+# Practical Examples
+
+- Resource limited growth
+- A basic Covid 19 model
+- Basic idea of a lake: the Chemostat
+- Lotka-Volterra's predator-prey interactions
+- Reactive transport in a river
+
 
 
 ---
@@ -462,8 +475,8 @@ out &lt;- ode(y0,
 
 
 
-<div id="htmlwidget-82fa7efe8a00c4649ed4" style="width:1008px;height:144px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-82fa7efe8a00c4649ed4">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1599f3d01c4693497553" style="width:1008px;height:144px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1599f3d01c4693497553">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 ---
@@ -471,8 +484,8 @@ out &lt;- ode(y0,
 
 ### System of equations
 
-<div id="htmlwidget-d537e258cbb483e681a5" style="width:1008px;height:144px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d537e258cbb483e681a5">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d2156dd0eb62febd2c83" style="width:1008px;height:144px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d2156dd0eb62febd2c83">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Nutrient, Algae\n           node [shape = none, fontsize=10]\n             growth\n           edge [penwidth=1.5]\n             Nutrient -> growth -> Algae \n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Algae -> growth \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ----
 
@@ -567,8 +580,8 @@ legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
 
 ## A standard SIR model
 
-<div id="htmlwidget-850b74593d7f02cf8d60" style="width:1008px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-850b74593d7f02cf8d60">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\", style=\"filled\", color=\"dodgerblue\"]\n             S, I, R\n           node [shape = none, fontsize=10, style=\"\"]\n             infection, recovery, mortality\n            node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             X\n           edge [penwidth=1.5]\n             S -> infection -> I\n             I -> recovery -> R\n             I -> mortality\n             mortality -> X\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-72b49e53bdb5787221e4" style="width:1008px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-72b49e53bdb5787221e4">{"x":{"diagram":"digraph feedback {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\", style=\"filled\", color=\"dodgerblue\"]\n             S, I, R\n           node [shape = none, fontsize=10, style=\"\"]\n             infection, recovery, mortality\n            node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             X\n           edge [penwidth=1.5]\n             S -> infection -> I\n             I -> recovery -> R\n             I -> mortality\n             mortality -> X\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 #### Total population is subdivided into 3 subpopulations
 
@@ -795,8 +808,8 @@ plot(S * X ~ D, data = state, type = "l")
 
 ### Lotka-Volterra's Predator and Prey
 
-<div id="htmlwidget-273f5f04b8628de6ecff" style="width:1008px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-273f5f04b8628de6ecff">{"x":{"diagram":"digraph lotka {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Predator, Prey\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             growth death grazing\n           edge [penwidth=1.5]\n             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Prey -> growth\n             Predator -> grazing\n           edge [penwidth=0.7, tailport = \"s\", headport = \"s\", constraint = false, color=tomato]\n             Prey -> grazing\n             Predator -> death\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-21ecba9468c463c1b177" style="width:1008px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-21ecba9468c463c1b177">{"x":{"diagram":"digraph lotka {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Predator, Prey\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             growth death grazing\n           edge [penwidth=1.5]\n             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Prey -> growth\n             Predator -> grazing\n           edge [penwidth=0.7, tailport = \"s\", headport = \"s\", constraint = false, color=tomato]\n             Prey -> grazing\n             Predator -> death\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 * state diagram, cycles
 * damped cycle if we introduce a Monod term
@@ -808,8 +821,8 @@ plot(S * X ~ D, data = state, type = "l")
 
 ### Lotka-Volterra Model
 
-<div id="htmlwidget-8a35ed8bd48ae4b69773" style="width:1008px;height:144px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8a35ed8bd48ae4b69773">{"x":{"diagram":"digraph lotka {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Predator, Prey\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             growth death grazing\n           edge [penwidth=1.5]\n             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Prey -> growth\n             Predator -> grazing\n           edge [penwidth=0.7, tailport = \"s\", headport = \"s\", constraint = false, color=tomato]\n             Prey -> grazing\n             Predator -> death\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-63dd187251331fe23a63" style="width:1008px;height:144px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-63dd187251331fe23a63">{"x":{"diagram":"digraph lotka {\n         graph [rankdir = \"LR\"]\n           node [shape = box, penwidth=2, fontname = \"Helvetica\"]\n             Predator, Prey\n           node [shape = octagon, penwidth=0.5, style=\"rounded\", fixedsize=25, fontsize=8]\n             Source Sink\n           node [shape = none, fontsize=10]\n             growth death grazing\n           edge [penwidth=1.5]\n             Source -> growth -> Prey -> grazing -> Predator -> death -> Sink\n           edge [penwidth=0.7, tailport = \"n\", headport = \"n\", constraint = false, color=tomato]\n             Prey -> growth\n             Predator -> grazing\n           edge [penwidth=0.7, tailport = \"s\", headport = \"s\", constraint = false, color=tomato]\n             Prey -> grazing\n             Predator -> death\n\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 `\begin{align}
 \frac{dPrey}{dt} &amp;= \mbox{Growth} - \mbox{Grazing}\\

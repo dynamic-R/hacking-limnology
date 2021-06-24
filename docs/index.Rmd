@@ -386,7 +386,7 @@ N_t &= N_{t-1} + r\cdot N_{t-1}
 
 ---
 
-### Numerical Integration Made Simple with deSolve
+### Numerical Integration Made Easy with deSolve
 
 .pull-left[
 #### Logistic growth
@@ -442,78 +442,74 @@ mtext("time", 1, 1.4)
 ]
 
 ---
-## What is deSolve?
+## R package deSolve
 
 .pull-left[ 
+#### Numerical solution of differential equations
 
-#### An **R package** to solve differential equations
-
-* numerical simulation of **initial value problems**
-* ODE, PDE, DAE, DDE
-* popular *industry class solvers* from ODEPACK $^1$
-* `+` classical Euler and Runge-Kutta solvers
+* **initial value problems**, .gray[ODE, PDE, DAE, DDE]
+* popular **industry class solvers** from ODEPACK<sup>1</sup><br>
+  .gray[and classical Euler and Runge-Kutta solvers]
 * convenience tools (e.g. `plot`, forcings, events) 
-* extensive documentation, e.g.
-  `r Citep(bib, "deSolve_jss")`
 ]
+
 
 .pull-right[
-
 #### Part of an "Ecosystem" for dynamical simulations
-* packages: rootSolve, bvpSolve, FME, reacTran, ...
-* books, websites, [StackOverflow](https://stackoverflow.com/search?tab=newest&q=%5br%5d%20desolve?ode)
 
-#### More:
+* packages: rootSolve, bvpSolve, FME, reacTran, ...
 * See [CRAN Task View](https://cran.r-project.org/web/views/DifferentialEquations.html) for related packages
+* extensive documentation: books, websites,
+[mailing list](https://stat.ethz.ch/mailman/listinfo/r-sig-dynamic-models), 
+[StackOverflow](https://stackoverflow.com/search?tab=newest&q=%5br%5d%20desolve?ode)
 ]
 
-$^1$ Thanks to the great authors (ctb=contributors) of the original algorithms who made their code publicly available:
+<br><br><br>
+$^1$ Thanks to the great ODEPACK authors (ctb=contributors) who made their code publicly available:
 
 Peter N. Brown [ctb] (files ddaspk.f, dvode.f, zvode.f), George D. Byrne [ctb] (files dvode.f, zvode.f), Ernst Hairer [ctb] (files radau5.f, radau5a), Alan C. Hindmarsh [ctb] (files ddaspk.f, dlsode.f, dvode.f, zvode.f, opdkmain.f, opdka1.f), Cleve Moler [ctb] (file dlinpck.f), Linda R. Petzold [ctb] (files ddaspk.f, dlsoda.f), Youcef Saad [ctb] (file dsparsk.f), Clement W. Ulrich [ctb] (file ddaspk.f)
 
 ---
+class: page-font-large
+
 ## What is `ode`?
 
-#### `ode`
-* top-level function to call one of the solvers
-* default: `lsoda`
+* **`ode`** is used to call one of the solvers
+* then the solver calls the model function at adequate time steps
+* the model function contains the **derivatives** of the system
+
+
+## Solvers
+* default: .red[**`lsoda`**]
 * Livermore solver for Ordinary Differential Equations, automatic
+* switches between stiff and non-stiff solver
 
-#### `lsoda`, `adams`, `bdf`, `vode`, ...?
 
-* stiff systems: `bdf`: tries hard to solve the system
-* sometimes, `adams` may be faster for simple problems 
-* default `lsoda` switches automatically between `bdf`and `adams`
 
-#### `euler`, `rk4`, `ode45`, ...
 
-* for specific problems
-
-#### `ode.1D`, ... `ode.3D`, ... `dde` 
-
-* see [docs](cran.r-project.org/package=deSolve/)
+... other solvers, fine-tuning and pitfalls, see [docs](cran.r-project.org/package=deSolve/)
 
 
 ---
 ## Automatic Step Size
 
 .pull-left[
-#### External and internal step size
+#### Internal time step size and output steps
 
-* user specifies tolerances `atol`, `rtol` = 1e-6
-* solver **adapts** internal step size to meet precision
-* results returned at pre-specified **external** time points
+Most solvers adapt integration steps automatically,<br> to maintain pre-defined precision.
+
+User can specify tolerances **`atol`**, **`rtol`**, default: $10^{-6}$
+
+Outputs collected at pre-specified time points.
 
 
-#### Fixed-step solvers
+#### Fixed-step solvers: `euler`, `rk2`, `rk4`
 
-* `euler`, `rk2`, `rk4`
-* problem: either not precise enough or too much work
-    * danger of instability
-    * optimum time step can vary over time
-    * stiff systems: some states change faster than others
-* `rk4` was very popular, as it is very easy to implement
-* use only if you know why 
+still quite popular, because easy to implement
+
+$\rightarrow$ problems with precision, CPU effort, stability
+
+$\rightarrow$ useful in special cases
 
 ]
 
@@ -521,14 +517,31 @@ Peter N. Brown [ctb] (files ddaspk.f, dvode.f, zvode.f), George D. Byrne [ctb] (
 
 ```r
 out <- ode(y0, 
-*  times = 1:10, # external time steps
+*  times = 1:10, # output time steps
   model, 
   parms, 
   atol = 1e-6, # absolute tolerance
   rtol = 1e-6  # relative tolerance
 )
 ```
+
+<br><br><br>
+* use .red[**`lsoda`**]
+* no need to use very small output steps
+* keep tolerances in mind,<br> consider to rescale huge or tiny values
 ]
+
+---
+class: page-font-huge
+
+# Practical Examples
+
+- Resource limited growth
+- A basic Covid 19 model
+- Basic idea of a lake: the Chemostat
+- Lotka-Volterra's predator-prey interactions
+- Reactive transport in a river
+
 
 
 ---
