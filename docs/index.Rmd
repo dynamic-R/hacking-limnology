@@ -85,9 +85,9 @@ The introduction will demonstrate selected examples: growth of organisms, predat
 
 ---
 
-### Example 2: Nitrification in a River
+### Example 2: Nitrification in a River (1D)
 .center[
-![Nitrification](img/river.gif)
+![:scale 62%](img/river.gif)
 ]
 ---
 
@@ -97,7 +97,7 @@ The introduction will demonstrate selected examples: growth of organisms, predat
 
 ---
 
-### Example 4: SIR Model in 2D
+### Example 4: Epidemiological Model in 2D
 
 .center[
 ![SIR 2D](img/sir2d.gif)
@@ -106,30 +106,47 @@ The introduction will demonstrate selected examples: growth of organisms, predat
 
 
 ---
+class: page-font-large
 
-## Dynamical System
+## Dynamical System<sup>.gray[*</sup>]
+
+* In **mathematics**: time dependence of points in geometrical space.
+* **Examples:** 
+    - clock pendulum 
+    - flow of water in a pipe
+    - number of fish each springtime in a lake
+* **State** at a given time:
+    - vector of real numbers
+    - point in state space
+* **Evolution rule:** 
+    - function that describes <span style="color: blue;"> what future states follow from the current state </span>
 
 
-* In mathematics, a system in which a function describes the time dependence of a point in a geometrical space.
-* Examples include models that describe the swinging of a clock pendulum, the flow of water in a pipe, and the number of fish each springtime in a lake.
-* The state of a dynamical system at a given time is a vector of real numbers, a point in state space. 
-* The evolution rule is a function that describes what future states follow from the current state.<sup>[1]</sup>
+.gray[*) Wikipedia, [Dynamical_system](https://en.wikipedia.org/wiki/Dynamical_system)]
 
+
+---
+class: page-font-large
 
 ### Different ways of description
 
+
 * statistical approach: time series of state variables (pools)
+
 * dynamic approach: description of changes
+
     * automata in discrete time: IBMs, ABMs, cellular automata
     * equations in discrete time: difference equations
     * equations in continuous time: differential equations (ODEs)
 
 A dynamical system can be described deterministically or stochastically. 
 
-We focus on the **deterministic** description in **continuous** time
-with numerically solved differential equations.
+We focus on the:
+* .blue[**deterministic**] description in 
+* .blue[**continuous time**] with 
+* .blue[numerically solved differential equations].
 
-[1] Wikipedia, [Dynamical_system](https://en.wikipedia.org/wiki/Dynamical_system)
+
 ---
 
 class: scrollable-slide
@@ -181,6 +198,7 @@ Gottfried Wilhelm Leibniz, 1646 - 1716
 From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://www.cc.gatech.edu/classes/AY2018/cs8803cc_spring/research_papers/Forrester-SystemDynamics.pdf)
 
 ---
+class: page-font-huge
 
 ## Dynamic systems: how and why?
 
@@ -188,13 +206,21 @@ From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://ww
 "Many believe that system dynamics has helped them become skilled at
 inventing the future, either by sketching out causal loops on the back of
 an envelope, or by assembling equations of cause and effect in a
-computer model. Both approaches work." (J.W.F, 1995)
+computer model. Both approaches work."
+
+.blue[(J. W. Forrester, 1995)]
+
+---
+class: page-font-large
+
+## Dynamic systems: how and why?
 
 
 .pull-left[
 #### Let’s speak about computers
-- continous time $\rightarrow$ differential equations
-- discrete time: another interesting story ...
+- continous time <br> $\rightarrow$ differential equations
+
+- discrete time: <br> another interesting story ...
 
 .center[
 ![:scale 40%](img/rlogo.png)
@@ -203,16 +229,19 @@ computer model. Both approaches work." (J.W.F, 1995)
 
 .pull-right[
 #### Why numerical integration?
-* Not all systems have an analytical solution.
-* Numerical solutions allow discrete input.    
+* Not all systems <br> have an analytical solution.
+
+* Numerical solutions <br> allow discrete input.    
 
 "... students can deal with high-order dynamic systems
 without ever discovering that their elders consider such to be very difficult."
-J.W. Forrester 2009.
+
+.gray[J. W. Forrester 2009]
 ]
 
 
 ---
+class: page-font-large
 
 ## Import and Export
 
@@ -224,41 +253,41 @@ $${
 grViz("digraph feedback {
          graph [rankdir = 'LR']
            node [shape = box, penwidth=2, fontname = 'Helvetica']
-             Matter
+             X
            node [shape = octagon, penwidth=0.5, style='rounded', fixedsize=25, fontsize=8]
              Source Sink
            node [shape = none, fontsize=10]
              import export
            edge [penwidth=1.5]
-             Source -> import -> Matter -> export -> Sink
+             Source -> import -> X -> export -> Sink
          
 }")
 ```
 
-
+$X$ = .gray[any quantity: matter, energy, information]
 
 ---
 
 ## Exponential Growth
 
 $${\frac{dN}{dt} = \mbox{birth} - \mbox{death}\\
-\frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
-\frac{dN}{dt} = b \cdot N - d \cdot N = (b-d) \cdot N = r \cdot N\\
+\frac{dN}{dt} = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N = b \cdot N - d \cdot N = (b-d) \cdot N \\
+\frac{dN}{dt} = r \cdot N\\
 }$$
 ```{r echo=FALSE, fig.height=4}
 grViz("digraph feedback {
          graph [rankdir = 'LR']
            node [shape = box, penwidth=2, fontname = 'Helvetica']
-             Population
+             'Population N'
            node [shape = octagon, penwidth=0.5, style='rounded', fixedsize=25, fontsize=8]
              Source Sink
            node [shape = none, fontsize=10]
              birth death
            edge [penwidth=1.5]
-             Source -> birth -> Population -> death -> Sink
+             Source -> birth -> 'Population N' -> death -> Sink
            edge [penwidth=0.7, tailport = 'n', headport = 'n', constraint = false, color=tomato]
-             Population -> birth 
-             Population -> death
+             'Population N' -> birth 
+             'Population N' -> death
 }")
 ```
 
@@ -268,16 +297,16 @@ grViz("digraph feedback {
 ## Analytical Integration
 
 
-
 .pull-left[
 ```{r expgrowth, echo=FALSE, fig.height=4, fig.width=10}
-par(mar=c(4, 5, 0, 1)+.1, las=1)
+par(mar=c(2.5, 5, 0, 1)+.1, las=1, lwd=2)
 r    <- 0.5
 N0   <- 10
 dt   <- 0.1
 time <- seq(0, 10, dt)
 N <- N0 * exp(r * time)
-plot(time, N, type="l", ylim=c(0, 1500))
+plot(time, N, type="l", xlab="", ylim=c(0, 1500))
+mtext("time", 1, 1.5)
 ```
 ```r
 r    <- 0.5
@@ -313,16 +342,18 @@ N_t &= N_0 e^{rt}\\
 .pull-left[
 
 ```{r expgrowth-euler, echo=FALSE, fig.height=4, fig.width=10}
-par(mar=c(4, 5, 0, 1)+.1, las=1)
+par(mar=c(2.5, 5, 0, 1)+.1, las=1, lwd=2)
 N <- numeric(length(time))
 
 N[1] <- N0
 for (i in 2:length(time)) {
   N[i] <- N[i-1] + r * N[i-1] * dt
 }
-plot(time, N, type = "l", lty="dashed", col="red", ylim=c(0, 1500))
+plot(time, N, type = "l", lty="solid", col="red", xlab="", ylim=c(0, 1500))
 N <- N0 * exp(r * time)
 lines(time, N, lty="solid")
+mtext("time", 1, 1.5)
+legend("topleft", c("analytical", "Euler"), col=c("black", "red"), lty=1)
 ```
 
 
@@ -333,8 +364,7 @@ N[1] <- N0
 for (i in 2:length(time)) {
   N[i] <- N[i-1] + r * N[i-1] * dt
 }
-plot(time, N, type = "l", 
-     col = "red", lty = "dashed")
+plot(time, N, type = "l", col = "red")
 ```
 ]
 
@@ -347,19 +377,24 @@ N_t &= N_{t-1} + r\cdot N_{t-1}
 
 <br></br>
 
-* differential equation $\rightarrow$ difference equation
-* approximation with discrete time step
+.page-font-large[
+* .red[approximation <br> with discrete time step]
+* differential equation <br> $\rightarrow$ difference equation
 * easy, but integration error
+]
 ]
 
 ---
 
-### Numerical Integration with deSolve: the Simple Way
+### Numerical Integration Made Simple with deSolve
 
 .pull-left[
 #### Logistic growth
 
+<span style="background: #ffff88;">
 $\frac{dN}{dt} = rN(1-N/K)$
+</span>
+
 
 #### Model formulation close to mathematical notation
 
@@ -387,7 +422,7 @@ plot(out)
 
 
 ```{r, ode-naive2, eval=TRUE, echo=FALSE, fig.width=10, fig.height=6}
-par(las=1, mar=c(5,5,1.5,1)+.1)
+par(las=1, mar=c(2.5,5,1.5,1)+.1, lwd=2)
 library("deSolve")
 model <- function (time, y, parms) {
   with(as.list(c(y, parms)), {
@@ -399,7 +434,8 @@ y0 <- c(N = 0.1)
 parms <- c(r = 0.1, K = 10)
 times <- seq(0, 100, 1)
 out <- ode(y0, times, model, parms)
-plot(out)
+plot(out, xlab="")
+mtext("time", 1, 1.4)
 ```
 
 * better performance, reduced integration error

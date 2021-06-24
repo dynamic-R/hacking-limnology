@@ -19,3 +19,29 @@
 .remark-slide-scaler {
     overflow-y: auto;
 }
+
+.page-font-large {
+  font-size: 28px;
+}
+
+.page-font-huge {
+  font-size: 42px;
+}
+
+
+
+.gray{
+  color: grey;
+}
+
+.blue{
+  color: blue;
+}
+
+.red{
+  color: red;
+}
+
+.bg-yellow{
+  background: yellow;
+}

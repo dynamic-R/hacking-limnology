@@ -133,19 +133,19 @@ plot_poly <- function(data, time) {
   NH4 <- y[1:N]
   NO3 <- y[(N+1):(2*N)]
   O2  <- y[(2*N+1):(3*N)]
-  x <- c(1, 1:N, N)
+  x   <- c(1, 1:N, N)
 
-  poly(x, c(0, NH4, 0), ylim=c(0, 6), pcol="#a6cee3", ylab="NH4 (mg/L)")
+  poly(x, c(0, NH4, 0), ylim=c(0,  6), pcol="#a6cee3", ylab="NH4 (mg/L)")
   poly(x, c(0, NO3, 0), ylim=c(0, 10), pcol="#b2df8a", ylab="NO3 (mg/L)")
-  poly(x, c(0, O2, 0), ylim=c(0, 10), pcol="#1f78b4", ylab="O2 (mg/L)")
+  poly(x, c(0,  O2, 0), ylim=c(0, 10), pcol="#1f78b4", ylab="O2 (mg/L)")
 }
 
 
 
 for (tt in time_seq)  {
-  png(paste0("river", 1000 + tt, ".png"), width=1400, height=800, pointsize = 24)
+  png(paste0("river", 1000 + tt, ".png"), width=1600, height=800, pointsize = 24)
   par(mfrow=c(3,1))
-  par(mar=c(3,5,1,0), las=1, cex.axis=1.4, cex.lab=1.4, cex.main=2)
+  par(mar=c(3,5,.5,0), las=1, cex.axis=1.4, cex.lab=1.4, cex.main=2)
   plot_poly(out1D, tt)
   dev.off()
 }
