@@ -34,9 +34,10 @@ background-image: url("img/water-light.jpg")
 This slide set is work in progress and still at a **very early stage of development**.
 It works with **Chrome**, **Firefox** and recent versions of **Edge**.
 
-The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021
+The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021.
 
-For the time being, please consult http://desolve.r-forge.r-project.org
+The source code of these slides can be found [here](https://github.com/dynamic-R/hacking-limnology).
+
 
 
 ```{r setup, include=FALSE}
@@ -1051,6 +1052,16 @@ lecture
 * C and Fortran interface
 * Karline's books
 * Online resources: R-Forge, CRAN-Taskview, publications
+
+---
+
+## Online Resources
+
+* The CRAN Task View [Differential Equations](https://cran.r-project.org/web/views/DifferentialEquations.html) gives an overview over other packages with differential equation solvers and related tools.
+
+* The [deSolve development page](desolve.r-forge.r-project.org) contains links to more detailed tutorials, books and papers.
+
+
 
 
 
