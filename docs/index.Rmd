@@ -68,7 +68,8 @@ style_mono_light(
 #library("xaringanExtra")
 xaringanExtra::use_webcam()
 xaringanExtra::use_tile_view()
-xaringanExtra::use_scribble()
+#xaringanExtra::use_scribble()
+#xaringanExtra::use_freezeframe()
 #xaringanExtra::use_progress_bar(color = "#0051BA", location = "top")
 ```
 
