@@ -64,6 +64,13 @@ style_mono_light(
 )
 ```
 
+```{r xaringanExtra, include=FALSE, warnint=FALSE}
+#library("xaringanExtra")
+xaringanExtra::use_webcam()
+xaringanExtra::use_tile_view()
+xaringanExtra::use_scribble()
+#xaringanExtra::use_progress_bar(color = "#0051BA", location = "top")
+```
 
 <!-- citations work differently with xaringan compared to @Markdown / -->
 ```{r, load_refs, include=FALSE, cache=FALSE}
