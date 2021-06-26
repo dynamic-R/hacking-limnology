@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 lang: en
 output:
   xaringan::moon_reader:
-    css: ["default", "useR-fonts", "tp_xaringan_scrollable.css"]
+    css: ["default", "useR-fonts", "xaringan-themer.css", "tp_xaringan_scrollable.css"]
     seal: false
     lib_dir: libs
     nature:
@@ -19,20 +19,23 @@ output:
         scroll: false
 ---
 
+
 class: center, middle, title-slide
 
-background-image: url("img/water-light.jpg")
+background-image: url("img/water_tud_r_oer_by.png")
+
+background-size: cover
+
 
 <!-- Own title slide / -->
 
 # Numerical simulation of dynamic systems with R: an introduction
 
-### Thomas Petzoldt and Karline Soetaert,  `r Sys.Date()`
+#### Thomas Petzoldt and Karline Soetaert,  `r Sys.Date()`
 
 #### IMPORTANT NOTE
 
-This slide set is work in progress and still at a **very early stage of development**.
-It works with **Chrome**, **Firefox** and recent versions of **Edge**.
+This slide set is work in progress and still at an **early stage of development**.
 
 The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021.
 
@@ -52,6 +55,15 @@ library("rootSolve")
 library("marelac")
 mypar <- list(las=1, cex.lab=1.4, cex.axis=1.4, lwd=2)
 ```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library("xaringanthemer")
+style_mono_light(
+  title_slide_text_color = "navy",
+  white_color = "#FFFFFF"
+)
+```
+
 
 <!-- citations work differently with xaringan compared to @Markdown / -->
 ```{r, load_refs, include=FALSE, cache=FALSE}
@@ -209,8 +221,7 @@ inventing the future, either by sketching out causal loops on the back of
 an envelope, or by assembling equations of cause and effect in a
 computer model. Both approaches work."
 
-.blue[(J. W. Forrester, 1995)]
-
+.small[.blue[(J. W. Forrester, 1995)]]
 ---
 class: page-font-large
 
@@ -218,7 +229,7 @@ class: page-font-large
 
 
 .pull-left[
-#### Let’s speak about computers
+#### Let’s speak about computers:
 - continous time <br> $\rightarrow$ differential equations
 
 - discrete time: <br> another interesting story ...
@@ -235,9 +246,8 @@ class: page-font-large
 * Numerical solutions <br> allow discrete input.    
 
 "... students can deal with high-order dynamic systems
-without ever discovering that their elders consider such to be very difficult."
-
-.gray[J. W. Forrester 2009]
+without ever discovering that their elders consider such to be very difficult."<br>
+.small[.gray[J. W. Forrester 2009]]
 ]
 
 
@@ -628,7 +638,7 @@ library("marelac")
 redfield(1, species="P", method="mass")
 ```
 
-#### Simulate Model
+#### Simulate the Model
 
 
 ```{r , echo=TRUE, eval=TRUE, fig.height=6}

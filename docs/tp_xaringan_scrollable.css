@@ -28,7 +28,9 @@
   font-size: 42px;
 }
 
-
+.small {
+  font-size: 70%;
+}
 
 .gray{
   color: grey;
