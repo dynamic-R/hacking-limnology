@@ -45,20 +45,20 @@
   /* Colors */
   --text-color: #18273F;
   --header-color: #23395b;
-  --background-color: #FFFFFF;
-  --link-color: #23395b;
+  --background-color: #E9EBEE;
+  --link-color: tomato;
   --text-bold-color: #23395b;
   --code-highlight-color: rgba(255,255,0,0.5);
-  --inverse-text-color: #FFFFFF;
+  --inverse-text-color: #E9EBEE;
   --inverse-background-color: #23395b;
-  --inverse-header-color: #FFFFFF;
-  --inverse-link-color: #23395b;
+  --inverse-header-color: #E9EBEE;
+  --inverse-link-color: tomato;
   --title-slide-background-color: #23395b;
   --title-slide-text-color: navy;
   --header-background-color: #23395b;
-  --header-background-text-color: #FFFFFF;
+  --header-background-text-color: #E9EBEE;
   --base: #23395b;
-  --white: #FFFFFF;
+  --white: #E9EBEE;
   --black: #18273F;
 }
 
