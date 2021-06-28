@@ -631,10 +631,10 @@ model <- function (time, y, parms) {
   })
 }
 y <- c(
-  Alg = 0.1, # algae,      mg/L carbon
-  P   = 0.2  # phosphorus, mg/L P
+  Alg = 10,  # algae,      mol/m3 carbon
+  P   =  5   # phosphorus, mol/m3 P
 ) # in mg/L
-parms <- c(r = 0.1, kP = 5e-3, Y = 41) # Y = C:P mass ratio
+parms <- c(r = 0.1, kP = 0.5, Y = 106) # Y = C:P - Redfield ratio
 ```
 
 #### Where do parameters come from?
@@ -644,7 +644,7 @@ parms <- c(r = 0.1, kP = 5e-3, Y = 41) # Y = C:P mass ratio
 
 ```{r, , echo=TRUE, eval=TRUE}
 library("marelac")
-redfield(1, species="P", method="mass")
+redfield(1, species="P")
 ```
 
 #### Simulate the Model
@@ -658,8 +658,8 @@ plot(out, las=1)
 #### Compare Scenarios
 
 ```{r , echo=TRUE, eval=TRUE, fig.height=6}
-out1 <- ode(y, times, model, parms =  c(r = 0.2, kP = 5e-3, Y = 41))
-out2 <- ode(y, times, model, parms =  c(r = 0.1, kP = 1e-2, Y = 50))
+out1 <- ode(y, times, model, parms =  c(r = 0.2, kP = 0.5, Y = 106))
+out2 <- ode(y, times, model, parms =  c(r = 0.1, kP = 1.0, Y = 120))
 
 plot(out1, out2, las=1)
 legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
