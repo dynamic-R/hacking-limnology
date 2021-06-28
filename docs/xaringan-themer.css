@@ -46,15 +46,15 @@
   --text-color: #18273F;
   --header-color: #23395b;
   --background-color: #E9EBEE;
-  --link-color: tomato;
+  --link-color: #006ab2;
   --text-bold-color: #23395b;
   --code-highlight-color: rgba(255,255,0,0.5);
   --inverse-text-color: #E9EBEE;
   --inverse-background-color: #23395b;
   --inverse-header-color: #E9EBEE;
-  --inverse-link-color: tomato;
+  --inverse-link-color: #006ab2;
   --title-slide-background-color: #23395b;
-  --title-slide-text-color: navy;
+  --title-slide-text-color: #00305d;
   --header-background-color: #23395b;
   --header-background-text-color: #E9EBEE;
   --base: #23395b;

@@ -59,8 +59,8 @@ mypar <- list(las=1, cex.lab=1.4, cex.axis=1.4, lwd=2)
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 library("xaringanthemer")
 style_mono_light(
-  title_slide_text_color = "navy",
-  link_color = "tomato"#,
+  title_slide_text_color = "#00305d",
+  link_color = "#006ab2"#,
   #white_color = "#FFFFFF"
 )
 ```
@@ -820,11 +820,13 @@ lines(times, f_contact(times))
 
 ## Back to Lake Modelling: The Chemostat
 
+![Chemostat](img/chemostat.svg)
 
-* inflow and outflow
-* numerical solution
-* equilibrium
-* rootSolve and analytical solution of equilibrium
+* Consider a chemostat bioreactor as a basic model of a lake:
+* Phosphorus (P) is delivered from a source with a constant *dilution* rate **D**.
+* Algae (Alg) take up phosphorus and grow.
+* Part of Algae and remainder of phosphorus are flushed away.
+
 
 ---
 
