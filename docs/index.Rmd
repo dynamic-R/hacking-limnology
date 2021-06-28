@@ -39,7 +39,7 @@ This slide set is work in progress and still at an **early stage of development*
 
 The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021.
 
-The [source code](https://github.com/dynamic-R/hacking-limnology) is available.
+The [source code](https://github.com/dynamic-R/hacking-limnology) is freely available.
 
 
 
