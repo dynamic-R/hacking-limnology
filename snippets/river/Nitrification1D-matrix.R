@@ -32,19 +32,19 @@ Grid <- setup.grid.1D(N = N, L = 100000)
 v  <- 1000        # m/day
 w  <- 15          # m
 h0 <- 0.35        # m
-A  <- w * h0      # m2
+A  <- w * h0      # m^2
 
 parameters <- c(
-  rMax          = 0.05,  # 1/day   nitrification rate
-  kO2           = 1e-3,  # mol/m3  half sat. constant
+  rMax          = 0.05,  # 1/day # intentionally low
+  kO2           = 1e-3,  # mol/m3, half sat. constant
   NH4up         = 0.5,   # mol/m3
   NO3up         = 0.0,   # mol/m3
   O2up          = 0.3,   # mol/m3
   NH4dwn        = 0.0,   # mol/m3
   NO3dwn        = 0.0,   # mol/m3
   O2dwn         = 0.3,   # mol/m3
-  D             = 100,   # m2/day dispersion coefficient
-  k2            = 0.1,   # 1/day  re-aeration rate
+  D             = 100,   # m2/day, dispersion coefficient
+  k2            = 0.1,   # 1/day # intentionally low
   O2sat         = 0.3    # mol/m3
 )
 
@@ -52,25 +52,34 @@ parameters <- c(
 # Model definition:
 #------------------------------------------------------------------------------
 
+## Peterson Stoichiometry matrix
+stoich <- matrix(c(
+  # NH4  NO3  O2
+    0,   0,   1,    # reaeration
+   -1,  +1,  -2     # nitrification
+  ),  nrow = 2, byrow = TRUE
+)
+
 Nitrification <- function(t, y, parameters) {
   with(as.list(c(parameters)),{
     NH4 <- y[1:N]
     NO3 <- y[(N+1):(2*N)]
     O2  <- y[(2*N+1):(3*N)]
 
-    aeration      <- k2 * (O2sat - O2)
-    nitrification <- rMax * O2/(O2 + kO2) * NH4
-
-    dNH4 <- -nitrification +
-      tran.1D(C = NH4, D = D, v = v, C.up = NH4up, C.down = NH4dwn, A = A, dx = Grid)$dC
-
-    dNO3 <- +nitrification +
-      tran.1D(C = NO3, D = D, v = v, C.up = NO3up, C.down = NO3dwn, A = A, dx = Grid)$dC
-
-    dO2  <-  aeration - 2 * nitrification +
+    tran <- cbind(
+      tran.1D(C = NH4, D = D, v = v, C.up = NH4up, C.down = NH4dwn, A = A, dx = Grid)$dC,
+      tran.1D(C = NO3, D = D, v = v, C.up = NO3up, C.down = NO3dwn, A = A, dx = Grid)$dC,
       tran.1D(C = O2 , D = D, v = v, C.up = O2up,  C.down = O2dwn,  A = A, dx = Grid)$dC
+    )
 
-    list(c(dNH4, dNO3, dO2))
+    proc <- cbind(
+      k2 * (O2sat - O2),             # re-aeration
+      rMax * O2/(O2 + kO2) * NH4     # nitrification
+    )
+
+    dY   <- tran + proc %*% stoich
+
+    list(c(dY))#, totalN = NO3 + NH4,  reaer = proc[1,], nitrif = proc[2,])
   })
 }
 
@@ -81,7 +90,7 @@ Nitrification <- function(t, y, parameters) {
 std <- steady.1D(y = runif(3*Grid$N), names=c("NH4", "NO3", "O2"),
    func = Nitrification, parms = parameters, nspec = 3, pos = TRUE)
 
-plot(std, mfrow = c(3, 1), las=1, xlab="km", ylab="mol/m3")
+plot(std, grid = Grid$x.mid, type = "l")
 
 #=============================================================================
 # Dynamic solution
