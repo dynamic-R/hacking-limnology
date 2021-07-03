@@ -1,10 +1,10 @@
 ################################################################################
 ##
-## == Simple Nitrification Model demonstrating the Peterson Matrix approach ==
+## == Simple Nitrification Model
 ##
 ## (based on an exercise of Soetaert and Meysman, Ecological Modelling
 ##  Nitrification in the Schelde river, 1-D)
-## Changes (ThPe): river geometry, parameters (unrealistic!, for demo only)
+## Changes (ThPe): river geometry, parameters (unrealistic, for demo only)
 ################################################################################
 
 library("ReacTran")
@@ -20,8 +20,9 @@ library("gifski")
 # Mass   = mol
 # Volume = m3
 
-N    <- 100
-Grid <- setup.grid.1D(N = N, L = 100000)
+N    <- 100  # number of grid cells
+cell <- 1000 # 1000m = 1km / grid cell
+Grid <- setup.grid.1D(N = N, L = N * cell)
 
 #=============================================================================
 # Model parameters
@@ -29,28 +30,36 @@ Grid <- setup.grid.1D(N = N, L = 100000)
 
 
 ## river characteristics
-v  <- 1000        # m/day
+v  <- 40000       # m/day
 w  <- 15          # m
 h0 <- 0.35        # m
 A  <- w * h0      # m2
 
 parameters <- c(
-  rMax          = 0.05,  # 1/day   nitrification rate
-  kO2           = 1e-3,  # mol/m3  half sat. constant
-  NH4up         = 0.5,   # mol/m3
-  NO3up         = 0.0,   # mol/m3
-  O2up          = 0.3,   # mol/m3
-  NH4dwn        = 0.0,   # mol/m3
-  NO3dwn        = 0.0,   # mol/m3
-  O2dwn         = 0.3,   # mol/m3
+  r_nitri       = 2.0,   # 1/day   nitrification rate
+  kO2           = 0.001, # mol/m3  half sat. constant
+  NH4up         = 0.5,   # mol/m3  upper boundary
+  NO3up         = 0.0,   # mol/m3  -- " --
+  O2up          = 0.3,   # mol/m3  -- " --
+  NH4dwn        = 0.0,   # mol/m3  lower boundary
+  NO3dwn        = 0.0,   # mol/m3  -- " --
+  O2dwn         = 0.3,   # mol/m3  -- " --
   D             = 100,   # m2/day dispersion coefficient
-  k2            = 0.1,   # 1/day  re-aeration rate
-  O2sat         = 0.3    # mol/m3
+  k2            = 2.8,   # 1/day  re-aeration rate
+  O2sat         = 0.3    # mol/m3 saturation concentration
 )
 
 #------------------------------------------------------------------------------
 # Model definition:
 #------------------------------------------------------------------------------
+
+## Peterson Stoichiometry matrix
+stoich <- matrix(c(
+  # NH4  NO3  O2
+    0,   0,   1,    # reaeration
+   -1,  +1,  -2     # nitrification
+  ),  nrow = 2, byrow = TRUE
+)
 
 Nitrification <- function(t, y, parameters) {
   with(as.list(c(parameters)),{
@@ -58,19 +67,20 @@ Nitrification <- function(t, y, parameters) {
     NO3 <- y[(N+1):(2*N)]
     O2  <- y[(2*N+1):(3*N)]
 
-    aeration      <- k2 * (O2sat - O2)
-    nitrification <- rMax * O2/(O2 + kO2) * NH4
-
-    dNH4 <- -nitrification +
-      tran.1D(C = NH4, D = D, v = v, C.up = NH4up, C.down = NH4dwn, A = A, dx = Grid)$dC
-
-    dNO3 <- +nitrification +
-      tran.1D(C = NO3, D = D, v = v, C.up = NO3up, C.down = NO3dwn, A = A, dx = Grid)$dC
-
-    dO2  <-  aeration - 2 * nitrification +
+    tran <- cbind(
+      tran.1D(C = NH4, D = D, v = v, C.up = NH4up, C.down = NH4dwn, A = A, dx = Grid)$dC,
+      tran.1D(C = NO3, D = D, v = v, C.up = NO3up, C.down = NO3dwn, A = A, dx = Grid)$dC,
       tran.1D(C = O2 , D = D, v = v, C.up = O2up,  C.down = O2dwn,  A = A, dx = Grid)$dC
+    )
 
-    list(c(dNH4, dNO3, dO2))
+    proc <- cbind(
+      k2 * (O2sat - O2),             # re-aeration
+      r_nitri * O2/(O2 + kO2) * NH4     # nitrification
+    )
+
+    dY   <- tran + proc %*% stoich
+
+    list(c(dY))#, totalN = NO3 + NH4,  reaer = proc[1,], nitrif = proc[2,])
   })
 }
 
@@ -82,6 +92,7 @@ std <- steady.1D(y = runif(3*Grid$N), names=c("NH4", "NO3", "O2"),
    func = Nitrification, parms = parameters, nspec = 3, pos = TRUE)
 
 plot(std, mfrow = c(3, 1), las=1, xlab="km", ylab="mol/m3")
+
 
 #=============================================================================
 # Dynamic solution
@@ -95,11 +106,11 @@ O2_0   <- 0.3 # mol/m3
 state <- c(rep(NH4_0, N), rep(NO3_0, N), rep(O2_0, N))
 
 # Time sequence
-time_seq <- seq(from = 0, to = 100, by = 1)
+time_seq <- seq(from = 0, to = 5, length.out=101)
 
 out1D  <- ode.1D(y=state, times=time_seq, func=Nitrification, parms=parameters, nspec=3)
 image(out1D, xlab = "time, days", ylab = "Distance, m", grid= Grid$x.mid,
-      main =c("NH4","NO3","O2"), add.contour=TRUE)
+      main =c("NH4","NO3","O2"), add.contour=TRUE, mfrow = c(1, 3))
 
 
 plot_poly <- function(data, time) {
@@ -121,8 +132,7 @@ plot_poly <- function(data, time) {
   poly(x, c(0,  O2, 0), ylim=c(0, 0.3), pcol="#1f78b4", ylab="O2 (mol/m3)")
 }
 
-
-for (tt in time_seq)  {
+for (tt in 1:length(time_seq))  {
   png(paste0("river", 1000 + tt, ".png"), width=1600, height=800, pointsize = 18)
   par(mfrow=c(3,1))
   par(mar=c(3,5,.5,0), las=1, cex.axis=1.4, cex.lab=1.4, cex.main=2)
