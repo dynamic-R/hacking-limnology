@@ -1042,19 +1042,77 @@ plot(out, las = 1)
 
 ## PDE's in 1D: Transport in a River
 
+* A 1D river model has in fact two dimensions, time and space.
+* The model has derivatives in both dimensions, so we getpartial differential equations (PDE).
+* Different methods exist to solve such systems -- **deSolve** supports the **method of lines**:
+    * space is discretisized into fixed grid cells
+    * time is handled by standard ODE solvers with variable time step
+    * functions `ode.1D`, `ode.2D` and `ode.3D` provide pre-defined Jacobi matrices
+* Transport with own matrix functions or with **R** package **ReacTran**
+* System of equations for all grid cells forms a state vector with, e.g. several 1000 equations,
+that are then solved quasiparallel by the solver.
 
-* package ReacTran
-* uses also matrix formulation
-* plot3D example
+
+Fast solvers + efficient estimation the Jacobians + R's vectorization make multidimensional models surprinsingly fast.
 
 ---
 
-## Outlook
+## Example: Nitrification in a River
+
+<br><br>
+
+.page-font-large[
+$$\mathrm{NH_4^+ + 2 O_2 \longrightarrow NO_3^- + H_2O + 2H^+}$$
+]
+
+--
+
+```{r diag-river_1d, echo=FALSE, fig.height=3}
+grViz("digraph river_1d {
+         graph [rankdir = 'LR', bgcolor='none']
+           node [shape = box, penwidth=2, fontname = 'Helvetica']
+             O2, NH4, NO3
+           node [shape = octagon, penwidth=0.5, style='rounded', fixedsize=25, fontsize=8]
+             Source
+           node [shape = none, fontsize=10]
+             nitrification aeration
+           edge [penwidth=1.5]
+             Source -> aeration -> O2
+             NH4 -> nitrification
+             O2 -> nitrification
+
+             nitrification -> NO3
+           edge [penwidth=0.7, tailport = 's', headport = 's', constraint = false, color=tomato]
+             O2 -> aeration
+}")
+```
+
+---
+
+## River Geometry
 
 
-* some bigger applications
-* rodeo package
-* shiny
+```{r diag-river_nh4, echo=FALSE, fig.height=4}
+grViz("digraph river_nh4 {
+         graph [rankdir = 'LR', bgcolor='none']
+           node [shape = box, penwidth=1.5, width=0.25, fontname = 'Helvetica', fontsize=16]
+           1 2 3 4 5 6 7  N
+           node [shape = none]
+           up '...' down
+           edge [penwidth=1.2, len=1]
+           up -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7  -> '...' -> N -> down
+     
+}")
+```
+
+
+* 100km river stretch, 100 grid cells, each 1km
+* upper and lower boundary conditions for all substances
+* for simplicity: constant river geometry, flow velocity and rate parameters
+
+
+
+
 
 ---
 
