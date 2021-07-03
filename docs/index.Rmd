@@ -111,6 +111,7 @@ The introduction will demonstrate selected examples: growth of organisms, predat
 .center[
 ![:scale 95%](img/river.gif)
 ]
+
 ---
 
 #### Example 3: SIR model - Flatten the curve
@@ -762,8 +763,6 @@ plot(out, las = 1, mfrow = c(1, 4))
 ```
 
 
-
-
 ---
 
 ## External Interventions
@@ -825,24 +824,32 @@ lines(times, f_contact(times))
 
 ---
 
-## Chemostat: Equations
+## A Chemostat with Algae and Phosphorus
 
 \begin{align}
-\frac{dAlg}{dt}  & = \mu \cdot Alg - D \cdot Alg\\
-\frac{dP}{dt}    & =  D \cdot (P_0 - P) - 1/Y \cdot \mu \cdot Alg\\
+\frac{dAlg}{dt}  & = growth - export \\
+\frac{dP}{dt}    & = (import - export) - 1/Y \cdot growth  
 \\
 \text{with:}\\
-\mu   & = \mu_{max} \cdot \frac{P}{kp + P}  \qquad\text{(Monod equation)}\\
+growth & = f(P)
 \end{align}
 
-**Todo: add drawing with symbols here**
+--- 
+
+\begin{align}
+\frac{dAlg}{dt}  & = r \cdot Alg - D \cdot Alg\\
+\frac{dP}{dt}    & =  D \cdot (P_0 - P) - 1/Y \cdot r \cdot Alg\\
+\\
+\text{with:}\\
+r   & = r_{max} \cdot \frac{P}{kp + P}  \qquad\text{(Monod equation)}\\
+\end{align}
 
 ---
 
 ## The Chemostat Code
 
 
-```{r Chemostat-dynamic, echo=TRUE, fig.height=6, dev.args=list(pointsize=20)}
+```{r Chemostat-dynamic, echo=TRUE, fig.height=5, fig.width=15, dev.args=list(pointsize=20)}
 library("deSolve")
 library("rootSolve")
 
@@ -877,7 +884,7 @@ plot(out, mfrow=c(1, 3), las = 1)
 
 #### Steady state solution
 
-```{r chemostat-equilibrium, echo=TRUE, fig.height=12}
+```{r chemostat-equilibrium, echo=TRUE, fig.height=12, fig.width=15}
 state <- data.frame(
   D = seq(0, 0.6, length.out = 100),
   X = 0,
@@ -964,7 +971,7 @@ With:
 
 ### Lotka-Volterra Model: Implementation
 
-```{r, LV-basic, echo=TRUE, fig.height=4}
+```{r, LV-basic, echo=TRUE, fig.height=4, fig.width=15}
 require(deSolve)   
 y0      <- c(Prey=300, Pred=10)            # state variable initial conditions
 parms   <- c(a=0.05, K=500, b=0.0002, g=0.8, e=0.03)  # parameter values
@@ -1013,7 +1020,7 @@ out <- ode(n0, times, model, parms)
 
 #### Matrix formulation: appears as one single equation
 
-```{r, echo=TRUE, fig.height=8}
+```{r, echo=TRUE, fig.height=8, fig.width=15}
 model <- function(t, N, parms) {
   with(parms, {
    {{dN_dt <- r * N  + N * (A %*% N)}}
@@ -1089,6 +1096,40 @@ grViz("digraph river_1d {
 
 ---
 
+## Model in 0D: Batch
+
+```{r, river0d, echo=TRUE, fig.height=4, fig.width=15}
+parms <- c(
+  r_nitri = 2.0,   # 1/day   nitrification rate
+  kO2     = 0.001, # mol/m3  half sat. constant
+  k2      = 2.8,   # 1/day  re-aeration rate
+  O2sat   = 0.3    # mol/m3 saturation concentration
+)
+
+Nitrification <- function(t, y, parms) {
+  with(as.list(c(y, parms)), {
+
+    aeration      <- k2 * (O2sat - O2)
+    nitrification <- r_nitri * O2/(O2 + kO2) * NH4
+
+    dNH4 <- -nitrification
+    dNO3 <- +nitrification
+    dO2  <-  aeration - 2 * nitrification
+    list(c(dNH4, dNO3, dO2))
+  })
+}
+
+y0 <- c(NH4 = 0.5, NO3 = 0, O2 = 0.3) # in mol/m3
+
+times <- seq(from = 0, to = 5, length.out=101)
+
+out <- ode(y=y0, times = times, func=Nitrification, parms = parms)
+plot(out, mfrow=c(1, 3), lwd = 2, las = 1, ylab="mol/m3")
+```
+
+
+---
+
 ## River Geometry
 
 
@@ -1110,33 +1151,208 @@ grViz("digraph river_nh4 {
 * upper and lower boundary conditions for all substances
 * for simplicity: constant river geometry, flow velocity and rate parameters
 
+---
+
+## Implementation of River Geometry and Transport
+
+```{r river-1d-code, eval=FALSE}
+library("ReacTran")
+Nitrification <- function(t, y, parameters) {
+  with(as.list(c(parameters)),{
+    NH4 <- y[1:N]
+    NO3 <- y[(N+1):(2*N)]
+    O2  <- y[(2*N+1):(3*N)]
+
+    aeration      <- k2 * (O2sat - O2)
+    nitrification <- r_nitri * O2/(O2 + kO2) * NH4
+
+    dNH4 <- -nitrification +
+      tran.1D(C = NH4, D = D, v = v, C.up = NH4up, C.down = NH4dwn, A = A, dx = Grid)$dC
+
+    dNO3 <- +nitrification +
+      tran.1D(C = NO3, D = D, v = v, C.up = NO3up, C.down = NO3dwn, A = A, dx = Grid)$dC
+
+    dO2  <-  aeration - 2 * nitrification +
+      tran.1D(C = O2 , D = D, v = v, C.up = O2up,  C.down = O2dwn,  A = A, dx = Grid)$dC
+
+    list(c(dNH4, dNO3, dO2))
+  })
+}
+```
+
+* N grid cells
+* state vector: $\mathrm{NH4_{1..100}, NO3_{101..200}, O2_{201..300}}$
+* upper and lower boundary conditions
+* river transect area A
+* longitudilal Diffusion D
+* grid cell length dx
+
+---
+
+## Full Source Code (with Animation)
+
+```{r river-1d-full, eval=FALSE}
+library("ReacTran")
+library("deSolve")
+library("rootSolve")
+library("gifski")
+
+## Measurement units used
+# Time   = day
+# Mass   = mol
+# Space  = m
+# Volume = m3
+
+N    <- 100  # number of grid cells
+cell <- 1000 # 1000m = 1km / grid cell
+Grid <- setup.grid.1D(N = N, L = N * cell)
+
+#=============================================================================
+# Model parameters
+#=============================================================================
 
 
+## river characteristics
+v  <- 40000       # m/day
+w  <- 15          # m
+h0 <- 0.35        # m
+A  <- w * h0      # m2
+
+parameters <- c(
+  r_nitri       = 2.0,   # 1/day   nitrification rate
+  kO2           = 0.001, # mol/m3  half sat. constant
+  NH4up         = 0.5,   # mol/m3  upper boundary
+  NO3up         = 0.0,   # mol/m3  -- " --
+  O2up          = 0.3,   # mol/m3  -- " --
+  NH4dwn        = 0.0,   # mol/m3  lower boundary
+  NO3dwn        = 0.0,   # mol/m3  -- " --
+  O2dwn         = 0.3,   # mol/m3  -- " --
+  D             = 100,   # m2/day dispersion coefficient
+  k2            = 2.8,   # 1/day  re-aeration rate
+  O2sat         = 0.3    # mol/m3 saturation concentration
+)
+
+#------------------------------------------------------------------------------
+# Model definition:
+#------------------------------------------------------------------------------
+
+Nitrification <- function(t, y, parameters) {
+  with(as.list(c(parameters)),{
+    NH4 <- y[1:N]
+    NO3 <- y[(N+1):(2*N)]
+    O2  <- y[(2*N+1):(3*N)]
+
+    aeration      <- k2 * (O2sat - O2)
+    nitrification <- r_nitri * O2/(O2 + kO2) * NH4
+
+    dNH4 <- -nitrification +
+      tran.1D(C = NH4, D = D, v = v, C.up = NH4up, C.down = NH4dwn, A = A, dx = Grid)$dC
+
+    dNO3 <- +nitrification +
+      tran.1D(C = NO3, D = D, v = v, C.up = NO3up, C.down = NO3dwn, A = A, dx = Grid)$dC
+
+    dO2  <-  aeration - 2 * nitrification +
+      tran.1D(C = O2 , D = D, v = v, C.up = O2up,  C.down = O2dwn,  A = A, dx = Grid)$dC
+
+    list(c(dNH4, dNO3, dO2))
+  })
+}
+
+#=============================================================================
+# Steady-state solution
+#=============================================================================
+
+std <- steady.1D(y = runif(3*Grid$N), names=c("NH4", "NO3", "O2"),
+   func = Nitrification, parms = parameters, nspec = 3, pos = TRUE)
+
+plot(std, mfrow = c(3, 1), las=1, xlab="km", ylab="mol/m3")
+
+
+#=============================================================================
+# Dynamic solution
+#=============================================================================
+
+# State variables and initial conditions
+NH4_0  <- 0.0 # mol/m3
+NO3_0  <- 0.0 # mol/m3
+O2_0   <- 0.3 # mol/m3
+
+state <- c(rep(NH4_0, N), rep(NO3_0, N), rep(O2_0, N))
+
+# Time sequence
+time_seq <- seq(from = 0, to = 5, length.out=101)
+
+out1D  <- ode.1D(y=state, times=time_seq, func=Nitrification, parms=parameters, nspec=3)
+image(out1D, xlab = "time, days", ylab = "Distance, m", grid= Grid$x.mid,
+      main =c("NH4","NO3","O2"), add.contour=TRUE, mfrow = c(1, 3))
+
+#=============================================================================
+# Animated figure
+#=============================================================================
+plot_poly <- function(data, time) {
+  poly <- function(x, y, pcol, ylab, ylim) {
+    plot(x, y, type="n", las=1, xlab="", ylab="", ylim=ylim)
+    polygon(x, y, col=pcol, lty="blank")
+    mtext(side=1, line=1.5, text="km")
+    mtext(side=2, line=3.5, text=ylab, las=3)
+
+  }
+  y <- data[time,-1]
+  NH4 <- y[1:N]
+  NO3 <- y[(N+1):(2*N)]
+  O2  <- y[(2*N+1):(3*N)]
+  x   <- c(1, 1:N, N)
+
+  poly(x, c(0, NH4, 0), ylim=c(0, 0.5), pcol="#a6cee3", ylab="NH4 (mol/m3)")
+  poly(x, c(0, NO3, 0), ylim=c(0, 0.5), pcol="#b2df8a", ylab="NO3 (mol/m3)")
+  poly(x, c(0,  O2, 0), ylim=c(0, 0.3), pcol="#1f78b4", ylab="O2 (mol/m3)")
+}
+
+for (tt in 1:length(time_seq))  {
+  png(paste0("river", 1000 + tt, ".png"), width=1600, height=800, pointsize = 18)
+  par(mfrow=c(3,1))
+  par(mar=c(3,5,.5,0), las=1, cex.axis=1.4, cex.lab=1.4, cex.main=2)
+  plot_poly(out1D, tt)
+  dev.off()
+}
+gifski(dir(pattern="^river.*png$"), gif_file = "river.gif", width=1600, height=800, delay=1/25)
+```
 
 
 ---
 
-## Appendices
-
-
-Things that should be mentioned somewhere, but not yet in the introductory
-lecture
-
-* Solver functions in deSolve
-* C and Fortran interface
-* Karline's books
-* Online resources: R-Forge, CRAN-Taskview, publications
+### Nitrification in a River (1D): Result
+.center[
+![:scale 95%](img/river.gif)
+]
 
 ---
 
-## Online Resources
+## Further reading ...
+
+The details are described in the package vignettes of [deSolve](https://CRAN.R-project.org/package=deSolve) and [ReacTran](https://CRAN.R-project.org/package=ReacTran) 
+and in the following papers: 
+`r Citet(bib, "deSolve_jss")`, 
+`r Citet(bib, "Soetaert2010_rjournal")`, 
+`r Citet(bib, "ReacTran")` and books: 
+`r Citet(bib, "Soetaert2008")`, 
+`r Citet(bib, "Soetaert2012")`.
+
+The package relies on the source code and publications of the original algorithms, especially:
+`r Citet(bib, "Hindmarsh1983")`, 
+`r Citet(bib, "Petzold1983")`, 
+`r Citet(bib, "Cash1990")`, 
+`r Citet(bib, "Hairer2009")` and 
+`r Citet(bib, "Hairer2010")`.
+
+### Online Resources
 
 * The CRAN Task View [Differential Equations](https://cran.r-project.org/web/views/DifferentialEquations.html) gives an overview over other packages with differential equation solvers and related tools.
 
-* The [deSolve development page](desolve.r-forge.r-project.org) contains links to more detailed tutorials, books and papers.
+* The [deSolve development page](https://desolve.r-forge.r-project.org) contains links to more detailed tutorials, books and papers.
 
 
-
+A bunch of free docs and examples can be found in the internet, just search for `deSolve` and `R`.
 
 
 ---
@@ -1157,3 +1373,38 @@ as is without warranty.
 PrintBibliography(bib)
 ```
 
+
+---
+
+## Appendix
+
+
+Things that should be mentioned somewhere, but not yet in the introductory
+lecture
+
+* Solver functions in deSolve
+* C and Fortran interface
+
+---
+
+## Performance
+
+Performance varies, depending on the type of the model. In general, simulation
+can be fast if models can be written as matrices.
+
+In case the performance appears as too slow, models can be written in **C** or 
+**Fortran**. In such cases, control is transferred from R to compiled code and both
+the solver and the model communicate directly. The interface is described in the [Compiled Code Package Vignette](https://cran.r-project.org/web/packages/deSolve/vignettes/compiledCode.pdf).
+
+In addition, several third parpy packages exist that allow on-the-fly code 
+generation from within R, especially 
+package [cOde](https://CRAN.R-project.org/package=cOde), 
+package [rodeo](https://CRAN.R-project.org/package=rodeo) and 
+package [odin](https://CRAN.R-project.org/package=odin).
+
+
+---
+
+## Solver Overview
+
+![:scale 75%](img/solver-overview.png)

@@ -1,6 +1,6 @@
 ################################################################################
 ##
-## == Simple Nitrification Model
+## == Simple Nitrification Model demonstrating the Peterson Matrix approach ==
 ##
 ## (based on an exercise of Soetaert and Meysman, Ecological Modelling
 ##  Nitrification in the Schelde river, 1-D)
@@ -53,34 +53,25 @@ parameters <- c(
 # Model definition:
 #------------------------------------------------------------------------------
 
-## Peterson Stoichiometry matrix
-stoich <- matrix(c(
-  # NH4  NO3  O2
-    0,   0,   1,    # reaeration
-   -1,  +1,  -2     # nitrification
-  ),  nrow = 2, byrow = TRUE
-)
-
 Nitrification <- function(t, y, parameters) {
   with(as.list(c(parameters)),{
     NH4 <- y[1:N]
     NO3 <- y[(N+1):(2*N)]
     O2  <- y[(2*N+1):(3*N)]
 
-    tran <- cbind(
-      tran.1D(C = NH4, D = D, v = v, C.up = NH4up, C.down = NH4dwn, A = A, dx = Grid)$dC,
-      tran.1D(C = NO3, D = D, v = v, C.up = NO3up, C.down = NO3dwn, A = A, dx = Grid)$dC,
+    aeration      <- k2 * (O2sat - O2)
+    nitrification <- r_nitri * O2/(O2 + kO2) * NH4
+
+    dNH4 <- -nitrification +
+      tran.1D(C = NH4, D = D, v = v, C.up = NH4up, C.down = NH4dwn, A = A, dx = Grid)$dC
+
+    dNO3 <- +nitrification +
+      tran.1D(C = NO3, D = D, v = v, C.up = NO3up, C.down = NO3dwn, A = A, dx = Grid)$dC
+
+    dO2  <-  aeration - 2 * nitrification +
       tran.1D(C = O2 , D = D, v = v, C.up = O2up,  C.down = O2dwn,  A = A, dx = Grid)$dC
-    )
 
-    proc <- cbind(
-      k2 * (O2sat - O2),             # re-aeration
-      r_nitri * O2/(O2 + kO2) * NH4     # nitrification
-    )
-
-    dY   <- tran + proc %*% stoich
-
-    list(c(dY))#, totalN = NO3 + NH4,  reaer = proc[1,], nitrif = proc[2,])
+    list(c(dNH4, dNO3, dO2))
   })
 }
 
