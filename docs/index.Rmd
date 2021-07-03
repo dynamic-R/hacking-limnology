@@ -428,7 +428,7 @@ model <- function (time, y, parms) {
 }
 y0 <- c(N = 0.1)
 parms <- c(r = 0.1, K = 10)
-times <- seq(0, 100, 1)
+times <- seq(from = 0, to = 100, by = 1)
 ```
 ]
 
@@ -452,7 +452,7 @@ model <- function (time, y, parms) {
 }
 y0 <- c(N = 0.1)
 parms <- c(r = 0.1, K = 10)
-times <- seq(0, 100, 1)
+times <- seq(from = 0, to = 100, by = 1)
 out <- ode(y0, times, model, parms)
 plot(out, xlab="")
 mtext("time", 1, 1.4)
@@ -537,11 +537,11 @@ $\rightarrow$ useful in special cases
 
 ```r
 out <- ode(y0, 
-*  times = 1:10, # output time steps
+*  times = seq(from = 1, to=10), # output time steps
   model, 
   parms, 
-  atol = 1e-6, # absolute tolerance
-  rtol = 1e-6  # relative tolerance
+  atol = 1e-6,                  # absolute tolerance
+  rtol = 1e-6                   # relative tolerance
 )
 ```
 
@@ -711,17 +711,17 @@ distribution or influence of stochasticity.
 
 
 \begin{align}
-\frac{dS}{dt} &= -Infection\\
-\frac{dI}{dt} &= Infection - Recovery - Mortality\\
-\frac{dR}{dt} &= Recovery
+\frac{dS}{dt} &= -infection\\
+\frac{dI}{dt} &= infection - recovery - mortality\\
+\frac{dR}{dt} &= recovery
 \end{align}
 
 where 
 
 \begin{align}
-Infection &= b \cdot I \cdot S\\
-Recovery  &= g \cdot I\\
-Mortality &= m \cdot I
+infection &= b \cdot I \cdot S\\
+recovery  &= g \cdot I\\
+mortality &= m \cdot I
 \end{align}
 
 | Name      | Value      | Description         | Unit                        |
@@ -739,17 +739,17 @@ Mortality &= m \cdot I
 SIR <- function(t, state, parameters) {
   with (as.list(c(state, parameters)), {
 
-    Infection <- b * S * I
-    Recovery  <- g * I
-    Mortality <- m * I
+    infection <- b * S * I
+    recovery  <- g * I
+    mortality <- m * I
     
-    dS_dt     <- -Infection 
-    dI_dt     <-  Infection - Recovery - Mortality
-    dR_dt     <-  Recovery
+    dS_dt     <- -infection 
+    dI_dt     <-  infection - recovery - mortality
+    dR_dt     <-  recovery
 
-    list(c(dS_dt, dI_dt, dR_dt),      # the time derivatives
-                 Population = S+I+R)  # extra output variable
-  }) 
+    list(c(dS_dt, dI_dt, dR_dt),  # the time derivatives
+         Population = S+I+R)      # extra output variable
+  })
 }
 
 y0 <- c(S = 11500000 - 1000, I = 1000, R = 0)
@@ -761,9 +761,9 @@ parms <- c(
 )
 
 
-times <- seq(from=0, to=365, by=1)   # time sequence, in days
-out   <- ode(y = y0, times=times, func=SIR, parms=parms)
-plot(out, las=1, mfrow=c(1,4))
+times <- seq(from = 0, to = 365, by = 1)   # time sequence, in days
+out   <- ode(y = y0, times = times, func = SIR, parms = parms)
+plot(out, las = 1, mfrow = c(1, 4))
 ```
 
 
@@ -804,12 +804,12 @@ parms <- c(
 )
 
 
-times <- seq(from=0, to=365, by=1)   # time sequence, in days
-out2   <- ode(y = y0, times=times, func=SIR_distancing, parms=parms)
-plot(out, out2, las=1, which=c("S", "I", "R"), mfrow=c(1,4))
+times <- seq(from = 0, to = 365, by = 1)   # time sequence, in days
+out2   <- ode(y = y0, times = times, func = SIR_distancing, parms = parms)
+plot(out, out2, las = 1, which = c("S", "I", "R"), mfrow = c(1, 4))
 plot(times, rep(1, length(times)), 
-     ylim=c(0,1), type="l", xlab="time", ylab="", 
-     main="social contact", las=1, lty=2, col="red")
+     ylim = c(0,1), type="l", xlab = "time", ylab = "", 
+     main = "social contact", las = 1, lty = 2, col = "red")
 lines(times, f_contact(times))
 ```
 
@@ -853,27 +853,27 @@ library("rootSolve")
 
 chemostat <- function(time, init, parms) {
   with(as.list(c(init, parms)), {
-    mu   <- mumax * P/(kp + P)  # Monod equation
-    dAlg_dt <- mu * Alg - D * Alg
-    dP_dt   <-  D *(P0 - P) - 1/Y * mu * Alg
-    list(c(dAlg_dt, dP_dt), mu=mu)
+    r       <- r_max * P/(kp + P)  # Monod equation
+    dAlg_dt <- r * Alg - D * Alg
+    dP_dt   <- D * (P0 - P) - 1/Y * r * Alg
+    list(c(dAlg_dt, dP_dt), r = r)
    })
 }
 parms <- c(
-  mumax = 0.5,    # 1/d
-  kp    = 0.01,   # half saturation constant (mg/L)
-  Y     = 41,     # yield coefficient (stoichiometric C:P ratio)
+  r_max = 0.5,    # 1/d
+  kp    = 0.5,    # half saturation constant, P (mol/m3)
+  Y     = 106,    # yield coefficient (stoichiometric C:P ratio)
   D     = 0.1,    # 1/d
-  P0    = 0.05    # P in inflow (mg/L)
+  P0    = 5       # P in inflow (mol/m3)
 )
-times <- seq(0, 40, 0.1)  # (d)
-init  <- c(Alg=0.01, P=0.05) # Phytoplankton C and Phosphorus P (mg/L)
+times <- seq(0, 40, 0.1)        # (d)
+init  <- c(Alg = 10, P = 5)    # Phytoplankton C and Phosphorus P (mol/m3)
 
 ## =============================================================================
 ## Dynamic simulation
 ## =============================================================================
 out <- ode(init, times, chemostat, parms)
-plot(out, mfrow=c(1, 3), las=1)
+plot(out, mfrow=c(1, 3), las = 1)
 ```
 
 ---
