@@ -37,12 +37,18 @@
 }
 
 .blue{
-  color: blue;
+  color: #28618C;
 }
 
 .red{
-  color: red;
+  color: #E8412C;
 }
+
+.green{
+  color: #63B32E;
+}
+
+
 
 .bg-yellow{
   background: yellow;
