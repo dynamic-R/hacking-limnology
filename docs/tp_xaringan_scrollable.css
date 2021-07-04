@@ -40,6 +40,10 @@
   color: #28618C;
 }
 
+.darkblue{
+  color: #00305d;
+}
+
 .red{
   color: #E8412C;
 }
@@ -58,5 +62,9 @@
 
 .bg-contrast {
   background: #00305d;
+  color: #ee7f00;
+}
+
+.orange {
   color: #ee7f00;
 }

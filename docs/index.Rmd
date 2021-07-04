@@ -97,6 +97,14 @@ Fortunately, computer algorithms allow to solve even complex differential equati
 The introduction will demonstrate selected examples: growth of organisms, predator-prey interaction, spread of diseases, and transport-reaction problems. The formulation of such models in R can be surprisingly compact and close to the mathematical equations. 
 
 ---
+class: center, middle, title-slide
+background-image: url("img/water-light.jpg")
+
+# Introduction
+
+
+
+---
 J.W. Forrester (2018-2016)
 
 ## Traditional linear thinking
@@ -158,37 +166,6 @@ grViz("digraph feedback1 {
 From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://web.mit.edu/sysdyn/sd-intro/D-4165-1.pdf)
 
 ---
-background-image: url("img/1280px-SARS-CoV-2-CDC-23312.jpg")
-
-## .bg-contrast[Example: An Epidemiological Model]
-
-
----
-background-image: url("img/batch.jpg")
-
-## .bg-contrast[Example: Resource Limited Growth]
-
-
-
----
-background-image: url("img/marmots.jpg")
-
-## .bg-contrast[Example: Predator-Prey model]
-
-
----
-background-image: url("img/neunzehnhain.jpg")
-
-## .bg-contrast[Example: A Lake with Inflow and Outflow]
-
----
-background-image: url("img/polluted-river3.jpg")
-
-## .bg-contrast[Example: Nitrification in a Polluted River]
-
-
-
----
 
 ## Example 1: Predator-Prey model
 
@@ -215,6 +192,13 @@ background-image: url("img/polluted-river3.jpg")
 .center[
 ![:scale 90% SIR 2D](img/sir2d.gif)
 ]
+
+---
+class: center, middle, title-slide
+background-image: url("img/water-light.jpg")
+
+# .darkblue[Description of Dynamic Systems]
+
 
 ---
 
@@ -339,6 +323,15 @@ class: page-font-large
 without ever discovering that their elders consider such to be very difficult."]
 .gray[J. W. Forrester 2009]]
 ]
+
+---
+class: center, middle, title-slide
+
+background-image: url("img/water-light.jpg")
+
+# Differential Equation Systems in R
+
+
 
 ---
 class: page-font-large
@@ -639,13 +632,19 @@ out <- ode(y0,
 ---
 class: page-font-huge
 
-# Practical Examples
+#backgrou Practical Examples
 
 1. Resource limited growth
 1. A basic Covid 19 model
 1. Basic idea of a lake: the Chemostat
 1. Lotka-Volterra's predator-prey interactions
 1. Reaction and transport in a river
+
+
+---
+background-image: url("img/batch.jpg")
+
+## .bg-contrast[Example 1: Resource Limited Growth]
 
 
 
@@ -749,15 +748,10 @@ legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
 ```
 
 
-
 ---
+background-image: url("img/1280px-SARS-CoV-2-CDC-23312.jpg")
 
-
-## SIR and the Covid 19 Pandemic
-
-
-* similar to resource-limited growth
-* show atol, rtol and rescaling of problems
+## .bg-contrast[Example 2: A Covid-19 Model]
 
 
 ---
@@ -896,11 +890,15 @@ lines(times, f_contact(times))
 ```
 
 
+---
+background-image: url("img/neunzehnhain.jpg")
+
+## .bg-contrast[Example 3: A Lake with Inflow and Outflow]
 
 
 ---
 
-## Back to Lake Modelling: The Chemostat
+## The Lake as a Bioreactor
 
 ![Chemostat](img/chemostat.svg)
 
@@ -994,6 +992,12 @@ plot(S * X ~ D, data = state, type = "l")
 
 
 **Note:** this can also be solved analytically.
+
+
+---
+background-image: url("img/marmots.jpg")
+
+## .bg-contrast[Example 4: Predator-Prey Model]
 
 
 ---
@@ -1125,6 +1129,10 @@ out <- ode(n0, times, model, parms)
 plot(out, las = 1)
 ```
 
+---
+background-image: url("img/polluted-river3.jpg")
+
+## .bg-contrast[Example : NitrificationReaction and Transport in a Polluted River]
 
 
 
@@ -1408,6 +1416,13 @@ gifski(dir(pattern="^river.*png$"), gif_file = "river.gif", width=1600, height=8
 .center[
 ![:scale 95%](img/river.gif)
 ]
+
+
+---
+background-image: url("img/outlook.jpg")
+
+# .bg-contrast[Outlook]
+
 
 ---
 
