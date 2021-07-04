@@ -192,6 +192,8 @@ Gottfried Wilhelm Leibniz, 1646 - 1716
 ]
 
 ---
+J.W. Forrester (2018-2016)
+
 ## Traditional linear thinking
 
 .center[
@@ -206,9 +208,10 @@ grViz("digraph causal {
 ```
 ]
 
-J.W. Forrester (2018-2016)
 
 ---
+J.W. Forrester (2018-2016)
+
 ## Dynamic thinking: Feedback loop
 
 <br>
