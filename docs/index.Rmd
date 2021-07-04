@@ -33,9 +33,6 @@ background-size: cover
 
 #### Thomas Petzoldt and Karline Soetaert,  `r Sys.Date()`
 
-#### IMPORTANT NOTE
-
-This slide set is work in progress and still at an **early stage of development**.
 
 The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021.
 
@@ -85,8 +82,8 @@ BibOptions(check.entries = FALSE,
 bib <- ReadBib("./bib.bib", check = FALSE)
 ```
 
----
 
+---
 
 ## Summary
 
@@ -114,13 +111,13 @@ The introduction will demonstrate selected examples: growth of organisms, predat
 
 ---
 
-#### Example 3: SIR model - Flatten the curve
+### Example 3: Covid-19: Flatten the Curve!
 
 <iframe src="https://weblab.hydro.tu-dresden.de/apps/sir-app/" width=1200px, height=600px></iframe>
 
 ---
 
-### Example 4: Epidemiological Model in 2D
+### Example 4: An Epidemiological Model in 2D
 
 .center[
 ![SIR 2D](img/sir2d.gif)
@@ -192,9 +189,45 @@ $\frac{dy}{dx} = k \cdot y$
 ![:scale 55%](img/leibniz.jpg)
 
 Gottfried Wilhelm Leibniz, 1646 - 1716
-
-
 ]
+
+---
+## Traditional linear thinking
+
+.center[
+```{r causal, echo=FALSE, fig.height=3.5}
+grViz("digraph causal {
+         graph [rankdir = 'LR', bgcolor='none']
+           node [shape = box, penwidth=2, fontname = 'Helvetica']
+             Information Action Result
+           edge [penwidth=1.5, minlen=2]
+             Information -> Action -> Result
+}")
+```
+]
+
+J.W. Forrester (2018-2016)
+
+---
+## Dynamic thinking: Feedback loop
+
+<br>
+
+.center[
+```{r feedback1, echo=FALSE, fig.height=4}
+grViz("digraph feedback1 {
+         graph [rankdir = 'LR', bgcolor='none']
+           node [shape = box, penwidth=2, fontname = 'Helvetica', minlen=3]
+             Information Action Result
+           edge [penwidth=1.5]
+             Information -> Action -> Result
+           edge [penwidth=0.7, tailport = 's', headport = 's', constraint = false, color=tomato, label='feedback']
+             Result -> Information
+           
+}")
+```
+]
+
 
 ---
 
@@ -202,23 +235,17 @@ Gottfried Wilhelm Leibniz, 1646 - 1716
 
 
 .pull-left[
-
-
 ![:scale 70%](img/forrester-fig3.png)
 ]
 
-
-
 .pull-right[
-
-
 ![:scale 50%](img/forrester-fig4.png)
 ]
 
 * thinking in feedback loops
 * easy to understand, if we think in pools and changes
 
-From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://www.cc.gatech.edu/classes/AY2018/cs8803cc_spring/research_papers/Forrester-SystemDynamics.pdf)
+From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://web.mit.edu/sysdyn/sd-intro/D-4165-1.pdf)
 
 ---
 class: page-font-huge
@@ -246,8 +273,7 @@ class: page-font-large
 
 .center[
 ![:scale 40%](img/rlogo.png)
-]
-]    
+]]    
 
 .pull-right[
 #### Why numerical integration?
@@ -419,7 +445,7 @@ $\frac{dN}{dt} = rN(1-N/K)$
 
 #### Model formulation close to mathematical notation
 
-```{r, ode-naive, eval=FALSE, echo=TRUE}
+```{r ode-naive, eval=FALSE, echo=TRUE}
 library("deSolve")
 model <- function (time, y, parms) {
   with(as.list(c(y, parms)), {
@@ -613,6 +639,7 @@ $$
 
 ---
 
+
 ## Resource Limited Growth
 
 #### The Model
@@ -646,14 +673,14 @@ redfield(1, species="P")
 #### Simulate the Model
 
 
-```{r , echo=TRUE, eval=TRUE, fig.height=6}
+```{r , echo=TRUE, eval=TRUE, fig.height=5, fig.width=15}
 out <- ode(y, times, model, parms)
 plot(out, las = 1)
 ```
 
 #### Compare Scenarios
 
-```{r , echo=TRUE, eval=TRUE, fig.height=6}
+```{r , echo=TRUE, eval=TRUE, fig.height=5, fig.width=15}
 out1 <- ode(y, times, model, parms =  c(r = 0.2, kP = 0.5, Y = 106))
 out2 <- ode(y, times, model, parms =  c(r = 0.1, kP = 1.0, Y = 120))
 
@@ -664,6 +691,7 @@ legend("topright", legend=c("Scenario 1", "Scenario 2"), lty=1:2, col=1:2)
 
 
 ---
+
 
 ## SIR and the Covid 19 Pandemic
 
@@ -963,11 +991,6 @@ With:
 \end{align}
 
 ---
-```{css}
-.remark-slide-number {
-    display: none;
-}
-```
 
 ### Lotka-Volterra Model: Implementation
 
@@ -1399,8 +1422,8 @@ the solver and the model communicate directly. The interface is described in the
 In addition, several third parpy packages exist that allow on-the-fly code 
 generation from within R, especially 
 package [cOde](https://CRAN.R-project.org/package=cOde), 
-package [rodeo](https://CRAN.R-project.org/package=rodeo) and 
-package [odin](https://CRAN.R-project.org/package=odin).
+package [rodeo](https://github.com/dkneis/rodeo) and 
+package [odin](https://mrc-ide.github.io/odin/).
 
 
 ---

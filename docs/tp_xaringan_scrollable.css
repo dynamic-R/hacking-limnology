@@ -47,3 +47,8 @@
 .bg-yellow{
   background: yellow;
 }
+
+.remark-slide-number {
+  display: none;
+}
+
