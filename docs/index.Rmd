@@ -265,11 +265,12 @@ class: page-font-large
 ]
 #### .blue[Dynamic approach]
 
-* description of changes
-* .gray[automata in discrete time: IBMs, ABMs, cellular automata]
-* .gray[equations in discrete time: difference equations]
-* equations in .blue[continuous time] $\rightarrow$ .blue[differential equations] (ODEs)
-* .blue[deterministic] .gray[or stochastic]
+* description of .green[changes]
+* .green[deterministic] .gray[or stochastic]
+* .gray[individual-based models]
+* .gray[discrete time: difference equations]
+* equations in .green[continuous time] $\rightarrow$ .green[differential equations] (ODEs)
+
 
 
 ---
@@ -300,6 +301,13 @@ Gottfried Wilhelm Leibniz, 1646 - 1716
 .center[
 ### $\Rightarrow$ describes .red[changes] of pools
 ]
+
+--- 
+.small[.gray[
+Newton: https://commons.wikimedia.org/wiki/File:IsaacNewton_1642-1727.jpg (CC-BY-SA 4.0) <br>
+Leibniz: https://commons.wikimedia.org/wiki/File:Gottfried_Wilhelm_Leibniz,_Bernhard_Christoph_Francke.jpg (public domain)
+]]
+
 ---
 class: page-font-huge
 
@@ -1264,7 +1272,7 @@ grViz("digraph river_nh4 {
 
 ## Implementation of River Geometry and Transport
 
-```{r river-1d-code, eval=FALSE}
+```{r river-1d-code, echo=TRUE, eval=FALSE}
 library("ReacTran")
 Nitrification <- function(t, y, parameters) {
   with(as.list(c(parameters)),{
@@ -1289,18 +1297,18 @@ Nitrification <- function(t, y, parameters) {
 }
 ```
 
-* N grid cells
+* `N` grid cells
 * state vector: $\mathrm{NH4_{1..100}, NO3_{101..200}, O2_{201..300}}$
 * upper and lower boundary conditions
-* river transect area A
-* longitudilal Diffusion D
-* grid cell length dx
+* river transect area `A` 
+* longitudinal Diffusion `D`
+* grid cell length `dx`
 
 ---
 
-## Full Source Code (with Animation)
+## Full Source Code .gray[(with source code for animations)]
 
-```{r river-1d-full, eval=FALSE}
+```{r river-1d-full, eval=FALSE, echo=TRUE}
 library("ReacTran")
 library("deSolve")
 library("rootSolve")
@@ -1319,7 +1327,6 @@ Grid <- setup.grid.1D(N = N, L = N * cell)
 #=============================================================================
 # Model parameters
 #=============================================================================
-
 
 ## river characteristics
 v  <- 40000       # m/day
@@ -1375,7 +1382,6 @@ std <- steady.1D(y = runif(3*Grid$N), names=c("NH4", "NO3", "O2"),
    func = Nitrification, parms = parameters, nspec = 3, pos = TRUE)
 
 plot(std, mfrow = c(3, 1), las=1, xlab="km", ylab="mol/m3")
-
 
 #=============================================================================
 # Dynamic solution
@@ -1434,6 +1440,22 @@ gifski(dir(pattern="^river.*png$"), gif_file = "river.gif", width=1600, height=8
 .center[
 ![:scale 95%](img/river.gif)
 ]
+
+
+---
+class: middle, title-slide, page-font-large
+background-image: url("img/water_tud_nioz_r_oer_by.jpg")
+background-size: cover
+
+# Conclusions
+
+* User-contributed packages for **R** to solve differential equations numerically
+
+* Easy to step in ...
+
+* ... supports also complex applications.
+
+* Part of a comprehensive "package ecosystem".
 
 
 ---
