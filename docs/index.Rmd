@@ -31,10 +31,13 @@ background-size: cover
 
 # Numerical simulation of dynamic systems with R: an introduction
 
-#### Thomas Petzoldt and Karline Soetaert,  `r Sys.Date()`
+#### Thomas Petzoldt and Karline Soetaert,  (version: `r Sys.Date()`)
 
 
-The name of the repo points to an upcoming workshop about open data in aquatic sciences https://aquaticdatasciopensci.github.io/ in July 2021.
+Contribution to the "Open Data and Open Science in the Aquatic Sciences" workshop<br>
+https://aquaticdatasciopensci.github.io/
+<br>
+July 16th 2021.
 
 The [source code](https://github.com/dynamic-R/hacking-limnology) is freely available.
 
@@ -109,14 +112,15 @@ J.W. Forrester (2018-2016)
 
 ## Traditional linear thinking
 
+<br>
 
 .center[
-```{r causal, echo=FALSE, fig.height=3.5}
+```{r causal, echo=FALSE, fig.height=1.5}
 grViz("digraph causal {
          graph [rankdir = 'LR', bgcolor='none']
            node [shape = box, penwidth=2, fontname = 'Helvetica']
              Information Action Result
-           edge [penwidth=1.5, minlen=2]
+           edge [penwidth=1.5]
              Information -> Action -> Result
 }")
 ```
@@ -126,7 +130,7 @@ grViz("digraph causal {
 ---
 J.W. Forrester (2018-2016)
 
-## Dynamic thinking: Feedback loop
+## Dynamic thinking: Feedback loops
 
 <br>
 
@@ -164,6 +168,19 @@ grViz("digraph feedback1 {
 * easy to understand, if we think in pools and changes
 
 From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://web.mit.edu/sysdyn/sd-intro/D-4165-1.pdf)
+
+
+---
+
+## Dynamic Systems are Everywhere
+
+.center[
+![:scale 43%](img/batch.jpg)
+![:scale 43%](img/small-stream.jpg)
+![:scale 43%](img/marmots.jpg)
+![:scale 43%](img/lake-dynamic.jpg)
+]
+
 
 ---
 
@@ -238,7 +255,7 @@ $$\mathbf{y_t \rightarrow y_{t+1}}$$
 ---
 class: page-font-large
 
-## Different ways of description
+## Different Ways of Description
 
 .gray[
 #### Statistical approach
@@ -475,15 +492,15 @@ N_t &= N_{t-1} + r\cdot N_{t-1}
 <br></br>
 
 .page-font-large[
-* .red[approximation <br> with discrete time step]
-* differential equation <br> $\rightarrow$ difference equation
+* .red[discrete time steps]
+* approximate differential equation<br> by $\rightarrow$ difference equation
 * easy, but integration error
 ]
 ]
 
 ---
 
-### Numerical Integration Made Easy with deSolve
+## Numerical Integration Made Easy with deSolve
 
 .pull-left[
 #### Logistic growth
@@ -493,7 +510,7 @@ $\frac{dN}{dt} = rN(1-N/K)$
 </span>
 
 
-#### Model formulation close to mathematical notation
+#### Code: close to mathematical notation
 
 ```{r ode-naive, eval=FALSE, echo=TRUE}
 library("deSolve")
@@ -513,12 +530,12 @@ times <- seq(from = 0, to = 100, by = 1)
 #### Solve with `ode`
 
 ```{r, echo=TRUE, eval=FALSE}
-out <- ode(y0, times, model, parms)
+{{out <- ode(y0, times, model, parms)}}
 plot(out)
 ```
 
 
-```{r, ode-naive2, eval=TRUE, echo=FALSE, fig.width=10, fig.height=6}
+```{r, ode-naive2, eval=TRUE, echo=FALSE, fig.width=10, fig.height=5.5}
 par(las = 1, mar=c(2.5,3,1.5,1)+.1, lwd = 2)
 library("deSolve")
 model <- function (time, y, parms) {
@@ -539,7 +556,7 @@ mtext("time", 1, 1.4)
 ]
 
 ---
-## R package deSolve
+## R Package deSolve
 
 .pull-left[ 
 #### Numerical solution of differential equations
@@ -583,8 +600,6 @@ class: page-font-large
 * default: .red[**`lsoda`**]
 * Livermore solver for Ordinary Differential Equations, automatic
 * switches between stiff and non-stiff solver
-
-
 
 
 ... other solvers, fine-tuning and pitfalls, see [docs](https://cran.r-project.org/package=deSolve/)
@@ -631,13 +646,18 @@ out <- ode(y0,
 
 ---
 class: page-font-huge
+background-image: url("img/water-light.jpg")
 
-#backgrou Practical Examples
+# Some Practical Examples
 
 1. Resource limited growth
+
 1. A basic Covid 19 model
-1. Basic idea of a lake: the Chemostat
+
+1. Basic idea of a lake: the chemostat
+
 1. Lotka-Volterra's predator-prey interactions
+
 1. Reaction and transport in a river
 
 
@@ -816,11 +836,10 @@ mortality &= m \cdot I
 ```{r SIR-solution, echo=TRUE, fig.width=16, fig.height=6}
 SIR <- function(t, state, parameters) {
   with (as.list(c(state, parameters)), {
-
     infection <- b * S * I
     recovery  <- g * I
     mortality <- m * I
-    
+
     dS_dt     <- -infection 
     dI_dt     <-  infection - recovery - mortality
     dR_dt     <-  recovery
@@ -830,15 +849,12 @@ SIR <- function(t, state, parameters) {
   })
 }
 
-y0 <- c(S = 11500000 - 1000, I = 1000, R = 0)
-
 parms <- c(
   b = 0.00000002,    # [1/ind/d], infection parameter 
   g = 0.07,          # [1/d],     recovery rate of infected individuals
   m = 0.007          # [1/d],     mortality rate of infected individuals
 )
-
-
+y0 <- c(S = 11500000 - 1000, I = 1000, R = 0)
 times <- seq(from = 0, to = 365, by = 1)   # time sequence, in days
 out   <- ode(y = y0, times = times, func = SIR, parms = parms)
 plot(out, las = 1, mfrow = c(1, 4))
@@ -849,8 +865,9 @@ plot(out, las = 1, mfrow = c(1, 4))
 
 ## External Interventions
 
-* Let's assume society implements social distancing **after** realizing exponential growth
-* implementation of forcings
+* Let's assume society implements social distancing **after** realizing exponential growth.
+* Implementation makes use of .green[forcings].
+* This allows to consider any time-dependent inputs.
 
 ```{r SIR-distancing, echo=TRUE, fig.width=16, fig.height=6}
 SIR_distancing <- function(t, state, parameters) {
@@ -1130,9 +1147,10 @@ plot(out, las = 1)
 ```
 
 ---
+background-color: #00305d
 background-image: url("img/polluted-river3.jpg")
 
-## .bg-contrast[Example : NitrificationReaction and Transport in a Polluted River]
+## .orange[Example 5:<br> Reaction<br> and Transport<br> in a<br> Polluted River]
 
 
 
@@ -1430,7 +1448,7 @@ background-image: url("img/outlook.jpg")
 
 The details are described in the package vignettes of [deSolve](https://CRAN.R-project.org/package=deSolve) and [ReacTran](https://CRAN.R-project.org/package=ReacTran) 
 and in the following papers: 
-`r Citet(bib, "deSolve_jss")`, 
+`r Citet(bib, "Soetaert2010b")`, 
 `r Citet(bib, "Soetaert2010_rjournal")`, 
 `r Citet(bib, "ReacTran")` and books: 
 `r Citet(bib, "Soetaert2008")`, 
@@ -1461,6 +1479,16 @@ A bunch of free docs and examples can be found in the internet, just search for 
 This resource was created by [tpetzoldt](github.com/tpetzoldt) and 
 [karlines](https://github.com/karlines). It is provided 
 as is without warranty.
+
+If not otherwise stated, images are own photos and drawings.
+
+The original drawings of `r Citet(bib, "Forrester1990")` are cited, the [Newton](https://commons.wikimedia.org/wiki/File:IsaacNewton_1642-1727.jpg) (CC-BY-SA 4.0), 
+[Leibniz](https://commons.wikimedia.org/wiki/File:Gottfried_Wilhelm_Leibniz,_Bernhard_Christoph_Francke.jpg) (public domain)
+and 
+[SARS-CoV-2](https://commons.wikimedia.org/wiki/File:SARS-CoV-2-CDC-23312.png) (public domain)
+images were provided by Wikimedia Commons under a creative commons license. 
+Please follow the link for details.
+
 
 ---
 
