@@ -108,7 +108,7 @@ background-image: url("img/water-light.jpg")
 
 
 ---
-J.W. Forrester (2018-2016)
+J.W. Forrester (1918-2016)
 
 ## Traditional linear thinking
 
@@ -128,7 +128,7 @@ grViz("digraph causal {
 
 
 ---
-J.W. Forrester (2018-2016)
+J.W. Forrester (1918-2016)
 
 ## Dynamic thinking: Feedback loops
 
