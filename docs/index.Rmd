@@ -1492,6 +1492,16 @@ The package relies on the source code and publications of the original algorithm
 
 A bunch of free docs and examples can be found in the internet, just search for `deSolve` and `R`.
 
+---
+class: center, middle, title-slide
+background-image: url("img/water-light.jpg")
+
+## Check out our github repos at:
+
+# https://github.com/dynamic-R
+
+
+## and thanks for watching.
 
 ---
 
