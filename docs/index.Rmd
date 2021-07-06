@@ -31,7 +31,7 @@ background-size: cover
 
 # Numerical simulation of dynamic systems with R: an introduction
 
-#### Thomas Petzoldt and Karline Soetaert,  (version: `r Sys.Date()`)
+#### Thomas Petzoldt and Karline Soetaert
 
 
 Contribution to the "Open Data and Open Science in the Aquatic Sciences" workshop<br>
@@ -39,7 +39,7 @@ https://aquaticdatasciopensci.github.io/
 <br>
 July 16th 2021.
 
-The [source code](https://github.com/dynamic-R/hacking-limnology) is freely available.
+.small[Version `r Sys.Date()`, source code freely available from [https://github.com/dynamic-R](https://github.com/dynamic-R/hacking-limnology)]
 
 
 
