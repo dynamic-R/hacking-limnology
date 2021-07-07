@@ -1,5 +1,5 @@
 ---
-title: "Numerical simulation of dynamic systems with R: an introduction"
+title: "Numerical Simulation of Dynamic Systems with R: An Introduction"
 author: "Thomas Petzoldt and Karline Soetaert"
 date: "`r Sys.Date()`"
 lang: en
@@ -29,7 +29,7 @@ background-size: cover
 
 <!-- Own title slide / -->
 
-# Numerical simulation of dynamic systems with R: an introduction
+# Numerical Simulation of Dynamic Systems With R: An Introduction
 
 #### Thomas Petzoldt and Karline Soetaert
 
@@ -175,10 +175,10 @@ From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://we
 ## Dynamic Systems are Everywhere
 
 .center[
-![:scale 43%](img/batch.jpg)
-![:scale 43%](img/small-stream.jpg)
-![:scale 43%](img/marmots.jpg)
-![:scale 43%](img/lake-dynamic.jpg)
+![:scale 40%](img/batch.jpg)
+![:scale 40%](img/small-stream.jpg)
+![:scale 40%](img/marmots.jpg)
+![:scale 40%](img/lake-dynamic.jpg)
 ]
 
 
@@ -193,21 +193,21 @@ From: [Forrester, J.W. (2009) Some Basic Concepts in System Dynamics](https://we
 
 ## Example 2: Nitrification in a River (1D)
 .center[
-![:scale 95%](img/river.gif)
+![:scale 90%](img/river.gif)
 ]
 
 ---
 
 ## Example 3: Covid-19: Flatten the Curve!
-
-<iframe src="https://weblab.hydro.tu-dresden.de/apps/sir-app/" width=1200px, height=600px></iframe>
-
+.center[
+<iframe src="https://weblab.hydro.tu-dresden.de/apps/sir-app/" width=800px, height=500px></iframe>
+]
 ---
 
 ## Example 4: An Epidemiological Model in 2D
 
 .center[
-![:scale 90% SIR 2D](img/sir2d.gif)
+![:scale 85% SIR 2D](img/sir2d.gif)
 ]
 
 ---
@@ -283,7 +283,7 @@ class: scrollable-slide
 .center[
 $\dot{y} = k \cdot y$
 
-![:scale 35.7%](img/newton.jpg)
+![:scale 35.1%](img/newton.jpg)
 
 Isaac Newton, 1643 - 1727
 ]]
@@ -292,14 +292,14 @@ Isaac Newton, 1643 - 1727
 .center[
 $\frac{dy}{dx} = k \cdot y$
 
-![:scale 39%](img/leibniz.jpg)
+![:scale 38%](img/leibniz.jpg)
 
 Gottfried Wilhelm Leibniz, 1646 - 1716
 ]]
 
 --- 
 .center[
-### $\Rightarrow$ describes .red[changes] of pools
+##### $\Rightarrow$ describes .red[changes] of pools
 ]
 
 --- 
@@ -390,7 +390,7 @@ $N$ = .gray[any quantity: matter, energy, information], e.g. **N**umber of indiv
 
 \begin{align}
 \frac{dN}{dt} &= \mbox{birth} - \mbox{death}\\
-              & = \mbox{birthhrate} \cdot N - \mbox{deathrate}\cdot N\\
+              & = \mbox{birthrate} \cdot N - \mbox{deathrate}\cdot N\\
               &= b \cdot N - d \cdot N = (b-d) \cdot N \\
 \frac{dN}{dt} &= r \cdot N\\
 \end{align}
@@ -494,7 +494,7 @@ plot(time, N, type = "l", col = "red")
 \begin{align}
 \frac{dN}{dt} &= r\cdot N\\
 \frac{\Delta N}{\Delta t} &= r\cdot N\\
-N_t &= N_{t-1} + r\cdot N_{t-1}
+N_t &= N_{t-1} + r\cdot N_{t-1} \cdot \Delta t
 \end{align}
 
 <br></br>
@@ -579,7 +579,7 @@ mtext("time", 1, 1.4)
 .pull-right[
 #### Part of an "Ecosystem" for dynamical simulations
 
-* packages: rootSolve, bvpSolve, FME, reacTran, ...
+* packages: rootSolve, bvpSolve, FME, ReacTran, ...
 * .green[compatible interfaces]
 * See [CRAN Task View](https://cran.r-project.org/web/views/DifferentialEquations.html) for related packages
 * .green[extensive documentation:] papers, books, websites,
@@ -894,7 +894,7 @@ SIR_distancing <- function(t, state, parameters) {
   }) 
 }
 
-{{f_contact <- approxfun(x = c(0, 50,  51, 365), y = c(1,  1, 0.5, 0.5), rule=2)}}
+{{f_contact <- approxfun(x = c(0, 50,  51, 365), y = c(1,  1, 0.5, 0.5), rule = 2)}}
 
 y0 <- c(S = 11500000 - 1000, I = 1000, R = 0)
 
@@ -930,7 +930,7 @@ background-image: url("img/neunzehnhain.jpg")
 * Consider a chemostat bioreactor as a basic model of a lake:
 * Phosphorus (P) is delivered from a source with a constant *dilution* rate **D**.
 * Algae (Alg) take up phosphorus and grow.
-* Part of Algae and remainder of phosphorus are flushed away.
+* Part of algae and remaing phosphorus are flushed away.
 
 
 ---
@@ -1076,7 +1076,8 @@ With:
 \begin{align}
 \mbox{growth}    & = a \cdot Prey & \qquad \text{(exponential growth)}\\
 \mbox{grazing}   & = b \cdot Prey \cdot Pred & \qquad \text{(interaction)}\\
-\mbox{mortality} & = -e \cdot Pred & \qquad \text{(exponential decay)}
+\mbox{mortality} & = -e \cdot Pred & \qquad \text{(exponential decay)}\\
+                 &  g              & \text{(grazing efficiency)}
 \end{align}
 
 ---
@@ -1085,8 +1086,8 @@ With:
 
 ```{r, LV-basic, echo=TRUE, fig.height=4, fig.width=15}
 require(deSolve)   
-y0      <- c(Prey=300, Pred=10)            # state variable initial conditions
-parms   <- c(a=0.05, K=500, b=0.0002, g=0.8, e=0.03)  # parameter values
+y0    <- c(Prey=300, Pred=10)                       # state variable initial conditions
+parms <- c(a=0.05, K=500, b=0.0002, g=0.8, e=0.03)  # parameter values
 
 LV <- function(t, state, parameters) { 
   with (as.list(c(state, parameters)), {
@@ -1167,7 +1168,7 @@ background-image: url("img/polluted-river3.jpg")
 ## PDE's in 1D: Transport in a River
 
 * A 1D river model has in fact two dimensions, time and space.
-* The model has derivatives in both dimensions, so we getpartial differential equations (PDE).
+* The model has derivatives in both dimensions, so we get partial differential equations (PDE).
 * Different methods exist to solve such systems -- **deSolve** supports the **method of lines**:
     * space is discretisized into fixed grid cells
     * time is handled by standard ODE solvers with variable time step
@@ -1177,7 +1178,7 @@ background-image: url("img/polluted-river3.jpg")
 that are then solved quasiparallel by the solver.
 
 
-Fast solvers + efficient estimation the Jacobians + R's vectorization make multidimensional models surprinsingly fast.
+Fast solvers + efficient estimation the Jacobians + R's vectorization<br> make multidimensional models surprinsingly fast.
 
 ---
 
@@ -1438,7 +1439,7 @@ gifski(dir(pattern="^river.*png$"), gif_file = "river.gif", width=1600, height=8
 
 ### Nitrification in a River (1D): Result
 .center[
-![:scale 95%](img/river.gif)
+![:scale 90%](img/river.gif)
 ]
 
 
