@@ -41,6 +41,10 @@ July 16th 2021.
 
 .small[Version `r Sys.Date()`, source code freely available from [https://github.com/dynamic-R](https://github.com/dynamic-R/hacking-limnology)]
 
+--- 
+
+Use coursor keys for navigation, press .red["O"] for a slide .red[O]verview
+]
 
 
 ```{r setup, include=FALSE}
