@@ -43,8 +43,8 @@ July 16th 2021.
 
 --- 
 
-Use coursor keys for navigation, press .red["O"] for a slide .red[O]verview
-]
+Use cursor keys for navigation, press .red["O"] for a slide .red[O]verview
+
 
 
 ```{r setup, include=FALSE}
