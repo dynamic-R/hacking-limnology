@@ -1,61 +1,42 @@
-library("deSolve")
-library("rootSolve")
+npz <- function(time, y, parms) {
+  with(as.list(c(y, parms)), {
 
-chemostat <- function(time, init, parms) {
-  with(as.list(c(init, parms)), {
-    r       <- r_max * P / (kp + P)
-    r_z     <- r_max_z * Alg / (k_alg + Alg)
+    p_growth <- r_pgrow * N / (km_n + N) * P
 
-    dZ_dt   <- r_z * Z - D * Z
-    dAlg_dt <- r * Alg - D * Alg - r_z * Z * 1/Y_z
-    dP_dt   <- D * (P0 - P) - r * Alg * 1/Y
-    list(c(dZ_dt, dAlg_dt, dP_dt))
-   })
+    z_grazing    <- r_zgraz  * P / (km_p + P) * Z
+    z_growth     <- asseff * z_grazing
+    n_recycling  <- (1 - asseff) * c_pn * z_grazing
+
+    n_import <- d * N0
+    n_export <- d * N
+    p_export <- d * P
+    z_export <- d * Z
+
+    dN_dt   <- n_import - c_pn * p_growth - n_export + n_recycling
+    dP_dt   <- p_growth - z_grazing - p_export
+    dZ_dt   <- z_growth - z_export
+
+    list(c(dN_dt, dP_dt, dZ_dt))
+  })
 }
 parms <- c(
-  r_max = 0.5,    # 1/d
-  kp    = 0.5,    # half saturation constant, P (mol/m3)
-  Y     = 106,    # yield coefficient (stoichiometric C:P ratio)
-  r_max_z = 0.2,  # max growth rate of zooplankton
-  k_alg = 100,    # half sat zoopl. - algae
-  Y_z   = 0.1,    # yield zooplankton
-  D     = 0.1,    # 1/d
-  P0    = 5       # P in inflow (mol/m3)
+  r_pgrow  = 0.5,   # phytoplankton growth parameter 1/d
+  r_zgraz  = 0.4,   # zooplankton grazing parameter 1/d
+
+  km_n     = 0.5,   # Monod constant of phyto growth on nutrient (mmol/m3)
+  km_p     = 100,   # Monod constant of zoo growth on phyto (mmol/m3)
+  c_pn     = 1/106, #stoichiometric conversion from phosporus P to phyto C (P:C ratio)
+  asseff   = 0.3,   # zooplankton assimilation efficiency (-)
+
+  d       = 0.1,    # dilution rate 1/d
+  N0      = 5       # P in inflow (mmol/m3)
 )
 
-times <- seq(0, 200, 0.1)        # (d)
+times <- seq(0, 40, 0.1)        # (d)
 
 # Zoo and Phyto as C and Phosphorus P (mol/m3)
-init  <- c(Z=10, Alg = 10, P = 5)
+y  <- c(N = 5, P=1, Z = 10)
 
-parms["D"] <- 0.0
-out0 <- ode(init, times, chemostat, parms)
-
-parms["D"] <- 0.1
-out1 <- ode(init, times, chemostat, parms)
-
-parms["D"] <- 0.2
-out2 <- ode(init, times, chemostat, parms)
-
-parms["D"] <- 0.5
-out4 <- ode(init, times, chemostat, parms)
-
-plot(out0, out1, out2, out4, mfrow=c(1,3))
-
-times <- seq(0, 2000, 0.1)        # (d)
-parms["D"] <- 0.16
-out3 <- ode(init, times, chemostat, parms)
-plot(out4)
-
-# scenario 0: equilibrium, algae extinct
-# scenario 1: Lotka-Volterra cycle
-# scenario 2: equilibrium, zooplankton extinct
-# scenario 3: equilibrium, coexistence
-# scenario 4: equilibrium, both extinct
-
-# scneario X: damped Lotka-Volterra cycle
-times <- seq(0, 2000, 0.1)        # (d)
-parms["D"] <- 0.12
-outx <- ode(init, times, chemostat, parms)
-plot(outx)
-
+parms["d"] <- 0.1
+out0 <- ode(init, times, npz, parms)
+plot(out0, mfrow = c(1, 3))

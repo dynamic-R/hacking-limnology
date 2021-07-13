@@ -1,6 +1,6 @@
 # DSOS/AEMON-J virtual workshop and summit: hacking-limnology
 
-This repository will hold a collection of teaching examples for **Day 5** of the [DSOS/AEMON-J workshop](https://aquaticdatasciopensci.github.io/program_1/) on numerical modelling.
+This repository will hold a collection of teaching examples for **Day 4** of the [DSOS/AEMON-J workshop](https://aquaticdatasciopensci.github.io/program_1/) on numerical modelling.
 
 We will use the **R** programming language and several CRAN packages to introduce numerical simulation of differential equation models from the field of Aquatic sciences and related areas.
 
